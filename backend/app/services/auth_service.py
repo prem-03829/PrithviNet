@@ -10,7 +10,6 @@ from app.schemas.auth_schema import RegisterRequest, LoginRequest
 # Password hashing setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 # JWT configuration
 SECRET_KEY = "prithvinet_super_secret_key"
 ALGORITHM = "HS256"
@@ -27,7 +26,7 @@ def hash_password(password: str):
 
 
 def verify_password(plain_password: str, hashed_password: str):
-    """Verify password with stored hash"""
+    """Verify password with hash"""
     return pwd_context.verify(plain_password, hashed_password)
 
 
@@ -37,6 +36,7 @@ def verify_password(plain_password: str, hashed_password: str):
 
 def create_access_token(data: dict):
     """Create JWT access token"""
+
     to_encode = data.copy()
 
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -53,9 +53,6 @@ def create_access_token(data: dict):
 # -----------------------------
 
 def register_user(db: Session, user_data: RegisterRequest):
-    """
-    Register a new user
-    """
 
     existing_user = db.query(User).filter(User.email == user_data.email).first()
 
@@ -68,7 +65,7 @@ def register_user(db: Session, user_data: RegisterRequest):
         name=user_data.name,
         email=user_data.email,
         password=hashed_password,
-        city=request.city 
+        city=user_data.city
     )
 
     db.add(new_user)
@@ -87,9 +84,6 @@ def register_user(db: Session, user_data: RegisterRequest):
 # -----------------------------
 
 def authenticate_user(db: Session, login_data: LoginRequest):
-    """
-    Authenticate user and return JWT token
-    """
 
     user = db.query(User).filter(User.email == login_data.email).first()
 

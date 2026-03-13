@@ -1,13 +1,85 @@
 from fastapi import APIRouter
-from app.services.environment_service import predict_environment
-router = APIRouter()
-@router.post("/predict")
+from pydantic import BaseModel
+from app.services.environment_service import (
+    predict_air,
+    predict_noise,
+    predict_water
+)
 
-def predict(data:dict):
-    result=predict_environment(
-        data["air"],
-        data["noise"],
-        data["water"]
 
-    )
-    return result
+router = APIRouter(
+    prefix="/environment",
+    tags=["Environment Prediction"]
+)
+
+
+# -----------------------------
+# REQUEST SCHEMAS
+# -----------------------------
+
+class AirData(BaseModel):
+    PM2_5: float
+    PM10: float
+    NO: float
+    NO2: float
+    NOx: float
+    NH3: float
+    CO: float
+    SO2: float
+    O3: float
+    Benzene: float
+    Toluene: float
+    Xylene: float
+
+class NoiseData(BaseModel):
+    traffic_density: float
+    vehicle_count: float
+    honking_events: float
+    population_density: float
+    near_highway: float
+    near_construction: float
+    industrial_zone: float
+
+
+class WaterData(BaseModel):
+    ph: float
+    turbidity: float
+    dissolved_oxygen: float
+    conductivity: float
+
+
+# -----------------------------
+# ROUTES
+# -----------------------------
+
+@router.post("/predict-air")
+def air_prediction(data: AirData):
+
+    result = predict_air(data.dict())
+
+    return {
+        "status": "success",
+        "data": result
+    }
+
+
+@router.post("/predict-noise")
+def noise_prediction(data: NoiseData):
+
+    result = predict_noise(data.dict())
+
+    return {
+        "status": "success",
+        "data": result
+    }
+
+
+@router.post("/predict-water")
+def water_prediction(data: WaterData):
+
+    result = predict_water(data.dict())
+
+    return {
+        "status": "success",
+        "data": result
+    }

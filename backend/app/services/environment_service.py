@@ -1,33 +1,83 @@
+import os
 import joblib
 import pandas as pd
-from pathlib import Path
-
-# Get backend directory
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-# AI models directory
-MODEL_DIR = BASE_DIR / "AI_models"
-
-# Load models
-air_model = joblib.load(MODEL_DIR / "air_model.pkl")
-noise_model = joblib.load(MODEL_DIR / "noise_model.pkl")
-water_model = joblib.load(MODEL_DIR / "water_model.pkl")
 
 
-def predict_environment(air, noise, water):
+# Get base directory of the project
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    air_df = pd.DataFrame([air])
-    air_df.rename(columns={"PM2_5": "PM2.5"}, inplace=True)
+# Model paths
+AIR_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "air_model.pkl")
+NOISE_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "noise_model.pkl")
+WATER_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "water_model.pkl")
 
-    noise_df = pd.DataFrame([noise])
-    water_df = pd.DataFrame([water])
 
-    air_prediction = float(air_model.predict(air_df)[0])
-    noise_prediction = float(noise_model.predict(noise_df)[0])
-    water_prediction = float(water_model.predict(water_df)[0])
+# Load models once when server starts
+air_model = joblib.load(AIR_MODEL_PATH)
+noise_model = joblib.load(NOISE_MODEL_PATH)
+water_model = joblib.load(WATER_MODEL_PATH)
+
+
+# -----------------------------
+# AIR POLLUTION PREDICTION
+# -----------------------------
+def predict_air(data: dict):
+
+    df = pd.DataFrame([data])
+
+    prediction = air_model.predict(df)
 
     return {
-        "air_quality_index": air_prediction,
-        "noise_level": noise_prediction,
-        "water_quality": water_prediction
+        "pollution_type": "air",
+        "prediction": float(prediction[0])
+    }
+
+
+# -----------------------------
+# NOISE POLLUTION PREDICTION
+# -----------------------------
+def predict_noise(data: dict):
+    try:
+        import pandas as pd
+
+        # Expected feature order for model
+        columns = [
+            "traffic_density",
+            "vehicle_count",
+            "honking_events",
+            "population_density",
+            "near_highway",
+            "near_construction",
+            "industrial_zone"
+        ]
+
+        # Convert request to DataFrame
+        df = pd.DataFrame([[data.get(col, 0) for col in columns]], columns=columns)
+
+        # Model prediction
+        prediction = noise_model.predict(df)
+
+        return {
+            "pollution_type": "noise",
+            "prediction": prediction[0]
+        }
+
+    except Exception as e:
+        return {
+            "error": str(e)
+        }
+
+
+# -----------------------------
+# WATER POLLUTION PREDICTION
+# -----------------------------
+def predict_water(data: dict):
+
+    df = pd.DataFrame([data])
+
+    prediction = water_model.predict(df)
+
+    return {
+        "pollution_type": "water",
+        "prediction": float(prediction[0])
     }

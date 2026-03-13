@@ -6,12 +6,13 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.services.database import get_db
 
-
 app = FastAPI(
     title="PrithviNet AI Backend",
     description="Minimal FastAPI backend for environmental assistant powered by Ollama Phi-3",
     version="1.0.0"
 )
+
+app.include_router(environment_router)
 
 # Configure CORS
 app.add_middleware(
@@ -40,7 +41,6 @@ if __name__ == "__main__":
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
 
 app.include_router(environment_router)
-
 
 @app.get("/db-test")
 def test_db(db: Session = Depends(get_db)):
