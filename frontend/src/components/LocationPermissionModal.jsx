@@ -1,0 +1,136 @@
+import { useEffect, useState } from 'react';
+import Modal from './Modal';
+import Button from './Button';
+import { useAppStore } from '../store/useAppStore';
+
+export default function LocationPermissionModal() {
+  const { 
+    showLocationPermission, 
+    setShowLocationPermission, 
+    setUserLocation, 
+    locationLoading, 
+    setLocationLoading, 
+    locationError,
+    setLocationError 
+  } = useAppStore();
+
+  const [statusMessage, setStatusMessage] = useState(null);
+
+  const handleRequest = () => {
+    setStatusMessage(null);
+    console.log("Geolocation: Requesting permission...");
+    
+    if (!navigator.geolocation) {
+      const err = "Geolocation is not supported by your browser.";
+      console.error("Geolocation:", err);
+      setLocationError(err);
+      return;
+    }
+
+    setLocationLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Geolocation: Success", { latitude, longitude });
+        
+        // Mock reverse geocoding
+        const mockCity = "Near you"; 
+        
+        setStatusMessage("Using your current location");
+        
+        // Brief delay to show success state before closing
+        setTimeout(() => {
+          setUserLocation({ lat: latitude, lng: longitude, city: mockCity });
+          setLocationLoading(false);
+          setShowLocationPermission(false);
+        }, 1500);
+      },
+      (error) => {
+        console.warn("Geolocation: Error or Denied", error.message);
+        let msg = "Location access denied. Using default location (India).";
+        if (error.code === 1) msg = "Permission denied. Please enable location in your browser settings.";
+        else if (error.code === 2) msg = "Location unavailable. Check your network connection.";
+        else if (error.code === 3) msg = "Request timed out.";
+        
+        setLocationError(msg);
+        setLocationLoading(false);
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+    );
+  };
+
+  // Check if permission was already granted
+  useEffect(() => {
+    if (showLocationPermission && navigator.permissions) {
+      navigator.permissions.query({ name: 'geolocation' }).then(result => {
+        if (result.state === 'granted') {
+          console.log("Geolocation: Permission already granted, auto-fetching...");
+          handleRequest();
+        }
+      });
+    }
+  }, [showLocationPermission]);
+
+  return (
+    <Modal 
+      isOpen={showLocationPermission} 
+      onClose={() => !locationLoading && setShowLocationPermission(false)}
+      title="Location Access"
+    >
+      <div className="flex flex-col items-center text-center space-y-6">
+        <div className={`size-20 rounded-full flex items-center justify-center transition-colors duration-500 ${
+          statusMessage ? 'bg-success bg-opacity-20 text-success' : 
+          locationError ? 'bg-danger bg-opacity-10 text-danger' : 
+          'bg-primary bg-opacity-10 text-primary'
+        }`}>
+          {locationLoading && !statusMessage ? (
+            <div className="size-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            <span className="material-symbols-outlined text-5xl">
+              {statusMessage ? 'check_circle' : locationError ? 'location_off' : 'location_on'}
+            </span>
+          )}
+        </div>
+        
+        <div className="space-y-2">
+          <h3 className="text-xl font-bold text-text-primary">
+            {statusMessage ? "Location Detected" : locationError ? "Access Denied" : "Enable Location Services"}
+          </h3>
+          <p className="text-text-secondary text-sm leading-relaxed min-h-[40px]">
+            {statusMessage || locationError || "PrithviNet uses your location to provide real-time local pollution data and alerts for your neighborhood."}
+          </p>
+        </div>
+
+        <div className="w-full flex flex-col gap-3">
+          {!statusMessage && (
+            <Button 
+              variant="primary" 
+              className="w-full py-4 relative overflow-hidden" 
+              onClick={handleRequest}
+              disabled={locationLoading}
+            >
+              <span className={locationLoading ? 'opacity-0' : 'opacity-100'}>
+                {locationError ? 'Try Again' : 'Share My Location'}
+              </span>
+              {locationLoading && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              )}
+            </Button>
+          )}
+          
+          {!locationLoading && !statusMessage && (
+            <Button variant="ghost" className="w-full" onClick={() => setShowLocationPermission(false)}>
+              Continue with Default (India)
+            </Button>
+          )}
+        </div>
+        
+        <p className="text-[10px] text-text-muted uppercase tracking-widest font-bold">
+          Your privacy is protected. We only use this data within the app.
+        </p>
+      </div>
+    </Modal>
+  );
+}
