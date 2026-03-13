@@ -5,7 +5,6 @@ node_modules/
 dist/
 build/
 .vite/
-.next/
 .cache/
 
 # logs
@@ -28,16 +27,19 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.sqlite
 *.sqlite3
+*.db
 
 # virtual envs
 .venv/
 venv/
 env/
 
-# uv
-.uv/
-uv.lock
+# python tooling cache
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # =========================
 # AI / MODELS
@@ -49,12 +51,20 @@ models/
 *.ckpt
 
 # =========================
+# SUPABASE LOCAL
+# =========================
+.supabase/
+supabase/.temp/
+supabase/.branches/
+supabase/functions/.temp/
+
+# =========================
 # SYSTEM FILES
 # =========================
 .DS_Store
 Thumbs.db
-*.pem
-*.key
+desktop.ini
+$RECYCLE.BIN/
 
 # =========================
 # EDITOR
@@ -63,17 +73,18 @@ Thumbs.db
 .idea/
 
 # =========================
-# BUILD OUTPUT
+# BUILD OUTPUT / REPORTS
 # =========================
 coverage/
 logs/
+*.log
 
 # =========================
-# DOCKER / DEPLOY
+# DOCKER
 # =========================
 docker-compose.override.yml
 
 # =========================
-# MISC
+# VITE CACHE
 # =========================
-*.log
+vite.config.ts.timestamp*
