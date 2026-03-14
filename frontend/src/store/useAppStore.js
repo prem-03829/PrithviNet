@@ -38,9 +38,78 @@ export const useAppStore = create((set, get) => ({
   setLocationError: (error) => set({ locationError: error, showLocationPermission: false }),
   logout: () => set({ user: null }),
 
+  // Preferences State
+  preferences: [
+    { id: 'push', label: 'Push Notifications', active: true },
+    { id: 'email', label: 'Email Reports', active: true },
+    { id: 'anon', label: 'Anonymous Reporting', active: false },
+  ],
+  togglePreference: (id) => set((state) => ({
+    preferences: state.preferences.map(p => 
+      p.id === id ? { ...p, active: !p.active } : p
+    )
+  })),
+
   // Data State
   sensors: [],
-  alerts: [],
+  alerts: [
+    {
+      id: 'AL-001',
+      source: 'Sensor',
+      icon: 'sensors',
+      severity: 'Critical',
+      timestamp: '2 mins ago',
+      title: 'Unusual PM10 spike detected',
+      location: 'Sector 12 Industrial Hub | Coordinates: 28.5355, 77.3910',
+      category: 'PM10',
+      value: '420 µg/m³'
+    },
+    {
+      id: 'AL-002',
+      source: 'Citizen',
+      icon: 'person_alert',
+      severity: 'Warning',
+      timestamp: '15 mins ago',
+      title: 'Waste burning reported in residential zone',
+      location: 'Green Park Colony | Verified by 3 proximity users',
+      category: 'Solid Waste',
+      value: 'Medium'
+    },
+    {
+      id: 'AL-003',
+      source: 'AI Predict',
+      icon: 'psychology',
+      severity: 'Critical',
+      timestamp: '45 mins ago',
+      title: 'Predicted Air Quality Degradation',
+      location: 'East-South Metropolitan Area | Prob: 94.2%',
+      category: 'AQI Trend',
+      value: '6 Hours'
+    },
+    {
+      id: 'AL-004',
+      source: 'Sensor',
+      icon: 'water_drop',
+      severity: 'Warning',
+      timestamp: '1 hour ago',
+      title: 'River pH Level Deviation',
+      location: 'Yamuna Intake Point A-4 | Current pH: 8.9',
+      category: 'Water',
+      value: '+1.2 pH'
+    },
+    {
+      id: 'AL-005',
+      source: 'AI Satellite',
+      icon: 'satellite_alt',
+      severity: 'Critical',
+      timestamp: '3 hours ago',
+      title: 'Large-scale Agricultural Fire Detected',
+      location: 'Peripheral Zone B | Satellite ID: PR-991',
+      category: 'Haze/Smoke',
+      hasMap: true,
+      mapCoords: 'LAT: 28.7041 / LONG: 77.1025'
+    }
+  ],
   complaints: [],
   investigations: [],
   complianceData: [],

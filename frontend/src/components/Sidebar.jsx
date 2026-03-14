@@ -1,9 +1,10 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import { useAppStore } from '../store/useAppStore';
 
-export default function Sidebar({ title, links, logo, fixed }) {
+export default function Sidebar({ title, links, logo, fixed, role }) {
   const { sidebarOpen, setSidebarOpen, mobileMenuOpen, setMobileMenuOpen } = useAppStore();
+  const settingsPath = role === 'Citizen' ? '/citizen/settings' : '/admin/settings';
 
   return (
     <>
@@ -58,13 +59,17 @@ export default function Sidebar({ title, links, logo, fixed }) {
         </nav>
 
         <div className="p-4 border-t border-border mt-auto">
-          <a className={cn(
-            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-panel transition-colors text-sm font-medium",
-            !sidebarOpen && "justify-center px-0"
-          )} href="#">
+          <Link 
+            to={settingsPath}
+            onClick={() => setMobileMenuOpen(false)}
+            className={cn(
+              "flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-secondary hover:bg-panel transition-colors text-sm font-medium",
+              !sidebarOpen && "justify-center px-0"
+            )}
+          >
             <span className="material-symbols-outlined shrink-0">settings</span>
             {sidebarOpen && <span>Settings</span>}
-          </a>
+          </Link>
         </div>
       </aside>
     </>

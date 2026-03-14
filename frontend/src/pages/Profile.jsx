@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useUserStore } from '../store/useUserStore';
 import { useComplaintStore } from '../store/useComplaintStore';
 import { usePollutionStore } from '../store/usePollutionStore';
+import { useAppStore } from '../store/useAppStore';
 import Card from '../components/Card';
 import Badge from '../components/Badge';
 import Button from '../components/Button';
@@ -14,6 +15,7 @@ export default function Profile() {
   const { user, logout } = useUserStore();
   const { complaints } = useComplaintStore();
   const { sensors } = usePollutionStore();
+  const { preferences, togglePreference } = useAppStore();
 
   const handleAiClick = () => {
     const aiPath = location.pathname.startsWith('/admin') ? '/admin/ai' : '/citizen/ai-assistant';
@@ -35,7 +37,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 lg:p-12 max-w-6xl mx-auto w-full space-y-6 md:space-y-8 animate-in fade-in duration-500">
+    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 lg:p-12 max-w-6xl mx-auto w-full space-y-6 md:space-y-8 animate-in fade-in duration-500 text-text-primary">
       {/* Identity Section */}
       <Card className="flex flex-col md:flex-row items-center gap-6 md:gap-8 p-6 md:p-10 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-primary bg-opacity-5 rounded-full -mr-16 -mt-16 blur-3xl"></div>
@@ -54,11 +56,11 @@ export default function Profile() {
             <h2 className="text-2xl md:text-3xl font-black tracking-tight">{user.name}</h2>
             <Badge variant="primary" className="w-fit mx-auto md:mx-0 scale-90 md:scale-100">Citizen Reporter</Badge>
           </div>
-          <p className="text-sm md:text-base text-slate-500 font-medium flex items-center justify-center md:justify-start gap-2">
+          <p className="text-sm md:text-base text-text-secondary font-medium flex items-center justify-center md:justify-start gap-2">
             <span className="material-symbols-outlined text-sm">location_on</span>
             {user.location}
           </p>
-          <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Member Since {user.joined}</p>
+          <p className="text-[10px] text-text-muted font-bold uppercase tracking-widest">Member Since {user.joined}</p>
         </div>
 
         <div className="flex gap-2 md:gap-3 shrink-0">
@@ -75,23 +77,23 @@ export default function Profile() {
             <div className="grid grid-cols-3 gap-3 md:gap-4">
               <div className="text-center p-3 md:p-4 bg-primary bg-opacity-5 rounded-xl border border-primary border-opacity-10">
                 <p className="text-xl md:text-2xl font-black text-primary">{userStats.total}</p>
-                <p className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Total</p>
+                <p className="text-[8px] md:text-[10px] font-bold text-text-secondary uppercase">Total</p>
               </div>
               <div className="text-center p-3 md:p-4 bg-orange-500/5 rounded-xl border border-orange-500/10">
                 <p className="text-xl md:text-2xl font-black text-orange-500">{userStats.active}</p>
-                <p className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Active</p>
+                <p className="text-[8px] md:text-[10px] font-bold text-text-secondary uppercase">Active</p>
               </div>
               <div className="text-center p-3 md:p-4 bg-green-500/5 rounded-xl border border-green-500/10">
                 <p className="text-xl md:text-2xl font-black text-green-500">{userStats.resolved}</p>
-                <p className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase">Resolved</p>
+                <p className="text-[8px] md:text-[10px] font-bold text-text-secondary uppercase">Resolved</p>
               </div>
             </div>
             
-            <div className="pt-6 border-t border-slate-200 dark:border-primary dark:border-opacity-10 text-center">
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Eco Impact Score</p>
+            <div className="pt-6 border-t border-border dark:border-border text-center">
+              <p className="text-xs font-bold text-text-muted uppercase tracking-widest mb-2">Eco Impact Score</p>
               <div className="relative size-32 mx-auto">
                 <svg className="size-full" viewBox="0 0 36 36">
-                  <path className="stroke-slate-200 dark:stroke-primary dark:stroke-opacity-5" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                  <path className="stroke-border dark:stroke-border" strokeWidth="3" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                   <path className="stroke-primary" strokeWidth="3" strokeDasharray="75, 100" strokeLinecap="round" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
@@ -99,7 +101,7 @@ export default function Profile() {
                   <span className="text-[8px] font-bold text-primary uppercase">Points</span>
                 </div>
               </div>
-              <p className="text-[10px] text-slate-500 mt-4 px-4 leading-relaxed">Top 5% of reporters in {user.city}. Keep protecting your city!</p>
+              <p className="text-[10px] text-text-secondary mt-4 px-4 leading-relaxed">Top 5% of reporters in {user.city}. Keep protecting your city!</p>
             </div>
           </Card>
 
@@ -107,20 +109,27 @@ export default function Profile() {
             <h3 className="text-lg font-bold">Preferences</h3>
             <div className="space-y-4">
               <ThemeSwitch />
-              <div className="pt-2 border-t border-slate-100 dark:border-primary dark:border-opacity-10"></div>
-              {[
-                { label: 'Push Notifications', active: true },
-                { label: 'Email Reports', active: true },
-                { label: 'Anonymous Reporting', active: false },
-              ].map((pref, i) => (
-                <div key={i} className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-slate-600 dark:text-slate-300">{pref.label}</span>
-                  <div className={cn(
-                    "w-10 h-5 rounded-full p-1 transition-colors cursor-pointer",
-                    pref.active ? "bg-primary" : "bg-slate-300 dark:bg-slate-700"
-                  )}>
-                    <div className={cn("size-3 bg-white rounded-full transition-transform", pref.active ? "translate-x-5" : "translate-x-0")}></div>
-                  </div>
+              <div className="pt-2 border-t border-border dark:border-border"></div>
+              {preferences.map((pref) => (
+                <div key={pref.id} className="flex items-center justify-between py-1">
+                  <span className="text-sm font-medium text-text-secondary dark:text-text-muted">{pref.label}</span>
+                  <button 
+                    type="button"
+                    role="switch"
+                    aria-checked={pref.active}
+                    onClick={() => togglePreference(pref.id)}
+                    className={cn(
+                      "relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20 z-10",
+                      pref.active ? "bg-primary" : "bg-slate-300 dark:bg-slate-700"
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "pointer-events-none inline-block size-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out",
+                        pref.active ? "translate-x-5" : "translate-x-0"
+                      )}
+                    />
+                  </button>
                 </div>
               ))}
             </div>
@@ -131,10 +140,10 @@ export default function Profile() {
         <div className="lg:col-span-2 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="space-y-4">
-              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest">Local Snapshot</h3>
+              <h3 className="text-sm font-bold text-text-muted uppercase tracking-widest">Local Snapshot</h3>
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-4xl font-black text-white">{localPollution.aqi}</p>
+                  <p className="text-4xl font-black">{localPollution.aqi}</p>
                   <p className="text-xs font-bold text-primary uppercase tracking-tighter">AQI • {user.city}</p>
                 </div>
                 <Badge variant={localPollution.status === 'critical' ? 'danger' : localPollution.status === 'unhealthy' ? 'warning' : 'primary'}>
@@ -144,7 +153,7 @@ export default function Profile() {
               <div className="p-4 bg-primary bg-opacity-5 rounded-xl border border-primary border-opacity-10">
                 <div className="flex gap-3">
                   <span className="material-symbols-outlined text-primary">lightbulb</span>
-                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-snug">
+                  <p className="text-sm text-text-secondary dark:text-text-muted leading-snug">
                     {getEcoSuggestion(localPollution.aqi)}
                   </p>
                 </div>
@@ -164,26 +173,26 @@ export default function Profile() {
           </div>
 
           <Card className="p-0 overflow-hidden">
-            <div className="p-6 border-b border-slate-200 dark:border-primary dark:border-opacity-10 flex items-center justify-between">
+            <div className="p-6 border-b border-border dark:border-border flex items-center justify-between">
               <h3 className="text-lg font-bold">Recent Activity</h3>
               <Button variant="ghost" className="text-primary text-xs" onClick={() => navigate('/citizen/my-complaints')}>View All</Button>
             </div>
-            <div className="divide-y divide-slate-100 dark:divide-primary dark:divide-opacity-5">
+            <div className="divide-y divide-border dark:divide-border">
               {complaints.map((c, i) => (
                 <div 
                   key={i} 
                   onClick={() => navigate(`/citizen/complaint/${c.id}`)}
-                  className="p-6 hover:bg-slate-50 dark:hover:bg-primary dark:hover:bg-opacity-5 transition-colors cursor-pointer group flex items-center justify-between"
+                  className="p-6 hover:bg-panel dark:hover:bg-panel transition-colors cursor-pointer group flex items-center justify-between"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                      <span className="text-xs font-bold text-slate-400 tracking-widest">{c.id}</span>
+                      <span className="text-xs font-bold text-text-muted tracking-widest">{c.id}</span>
                       <Badge variant={c.status === 'Resolved' ? 'success' : 'warning'} className="scale-75 origin-left">{c.status}</Badge>
                     </div>
-                    <p className="text-sm font-bold text-slate-900 dark:text-slate-100 group-hover:text-primary transition-colors">{c.title}</p>
-                    <p className="text-xs text-slate-500">{c.date} • {c.location}</p>
+                    <p className="text-sm font-bold group-hover:text-primary transition-colors">{c.title}</p>
+                    <p className="text-xs text-text-secondary">{c.date} • {c.location}</p>
                   </div>
-                  <span className="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">chevron_right</span>
+                  <span className="material-symbols-outlined text-text-muted group-hover:text-primary transition-colors">chevron_right</span>
                 </div>
               ))}
             </div>

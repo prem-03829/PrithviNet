@@ -1,18 +1,15 @@
 import Card from '../components/Card';
 import ThemeSwitch from '../components/ThemeSwitch';
+import { useAppStore } from '../store/useAppStore';
 import { cn } from '../utils/cn';
 
 export default function Settings() {
-  const preferences = [
-    { label: 'Push Notifications', active: true },
-    { label: 'Email Reports', active: true },
-    { label: 'Anonymous Reporting', active: false },
-  ];
+  const { preferences, togglePreference } = useAppStore();
 
   return (
-    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 lg:p-12 max-w-4xl mx-auto w-full space-y-8 animate-in fade-in duration-500">
+    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 lg:p-12 max-w-4xl mx-auto w-full space-y-8 animate-in fade-in duration-500 text-text-primary">
       <div className="space-y-2">
-        <h2 className="text-3xl font-black tracking-tight text-text-primary">Account Settings</h2>
+        <h2 className="text-3xl font-black tracking-tight">Account Settings</h2>
         <p className="text-text-secondary">Manage your profile, preferences, and account security.</p>
       </div>
 
@@ -24,15 +21,27 @@ export default function Settings() {
               <ThemeSwitch />
               
               <div className="pt-6 border-t border-border dark:border-border space-y-4">
-                {preferences.map((pref, i) => (
-                  <div key={i} className="flex items-center justify-between">
+                {preferences.map((pref) => (
+                  <div key={pref.id} className="flex items-center justify-between py-1">
                     <span className="text-sm font-medium text-text-secondary dark:text-text-muted">{pref.label}</span>
-                    <div className={cn(
-                      "w-10 h-5 rounded-full p-1 transition-colors cursor-pointer",
-                      pref.active ? "bg-primary" : "bg-panel dark:bg-panel"
-                    )}>
-                      <div className={cn("size-3 bg-white rounded-full transition-transform", pref.active ? "translate-x-5" : "translate-x-0")}></div>
-                    </div>
+                    <button 
+                      type="button"
+                      role="switch"
+                      aria-checked={pref.active}
+                      onClick={() => togglePreference(pref.id)}
+                      className={cn(
+                        "relative inline-flex h-7 w-12 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-20",
+                        pref.active ? "bg-primary" : "bg-slate-300 dark:bg-slate-700"
+                      )}
+                      style={{ zIndex: 100 }}
+                    >
+                      <span
+                        className={cn(
+                          "pointer-events-none inline-block size-6 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out",
+                          pref.active ? "translate-x-5" : "translate-x-0"
+                        )}
+                      />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -49,7 +58,7 @@ export default function Settings() {
                   <span className="material-symbols-outlined">lock</span>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-text-primary">Change Password</p>
+                  <p className="text-sm font-bold">Change Password</p>
                   <p className="text-xs text-text-secondary">Update your account password</p>
                 </div>
               </div>
@@ -61,7 +70,7 @@ export default function Settings() {
                   <span className="material-symbols-outlined">shield</span>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-text-primary">Two-Factor Authentication</p>
+                  <p className="text-sm font-bold">Two-Factor Authentication</p>
                   <p className="text-xs text-text-secondary">Add an extra layer of security</p>
                 </div>
               </div>

@@ -62,8 +62,10 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="map" element={<PollutionMap isAdmin={true} />} />
             <Route path="compliance" element={<Compliance />} />
+            <Route path="policy" element={<DummyPage title="Policy Insights" />} />
             <Route path="alerts" element={<Alerts />} />
             <Route path="ai" element={<AIAssistant />} />
+            <Route path="reports" element={<DummyPage title="Reports" />} />
             <Route path="investigation/:id" element={<InvestigationDetail />} />
             <Route path="awareness" element={<DummyPage title="Awareness & Data" />} />
             <Route path="profile" element={<Profile />} />

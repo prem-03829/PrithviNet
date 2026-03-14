@@ -21,6 +21,7 @@ export default function CitizenLayout() {
         title="Citizen Portal" 
         links={navLinks} 
         logo="eco" 
+        role="Citizen"
         fixed
       />
       <main className={cn(

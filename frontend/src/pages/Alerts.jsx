@@ -1,80 +1,71 @@
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
 import AlertCard from '../components/AlertCard';
-import Button from '../components/Button';
-import { alertService } from '../services/alertService';
 
 export default function Alerts() {
   const navigate = useNavigate();
-  const { alerts, updateAlertStatus } = useAppStore();
+  const { alerts } = useAppStore();
 
-  const handleResolve = async (id) => {
-    const res = await alertService.resolveAlert(id);
-    if (res.success) {
-      updateAlertStatus(id, 'STABLE');
-    }
+  const handleAlertClick = (alert) => {
+    navigate(`/admin/investigation/${alert.id}`);
   };
 
   return (
-    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8 max-w-4xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6 md:mb-8">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold">System Alerts</h2>
-          <p className="text-slate-500 text-xs md:text-sm mt-1">Real-time environmental risk detection</p>
+    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8">
+      <div className="max-w-5xl mx-auto space-y-6">
+        {/* Quick Stats/Filter */}
+        <div className="flex flex-wrap gap-4 items-center justify-between mb-8">
+          <div className="flex gap-2">
+            <button className="px-4 py-2 bg-primary text-background-dark font-bold rounded-lg text-sm transition-all hover:brightness-110 shadow-lg shadow-primary/20">
+              All Alerts
+            </button>
+            <button className="px-4 py-2 bg-surface border border-border text-text-secondary rounded-lg text-sm hover:bg-panel transition-all font-medium">
+              Critical
+            </button>
+            <button className="px-4 py-2 bg-surface border border-border text-text-secondary rounded-lg text-sm hover:bg-panel transition-all font-medium">
+              Warning
+            </button>
+          </div>
+          <div className="text-sm text-text-secondary">
+            Showing <span className="text-primary font-bold">{alerts.length}</span> active incidents
+          </div>
         </div>
-        <Button variant="outline" className="text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2">
-          <span className="material-symbols-outlined text-sm">filter_list</span>
-          Filter
-        </Button>
-      </div>
 
-      <div className="space-y-6">
-        {alerts.length === 0 ? (
-          <div className="text-center py-20 bg-primary bg-opacity-5 rounded-2xl border border-primary border-opacity-10">
-            <span className="material-symbols-outlined text-4xl text-slate-400 mb-2">notifications_off</span>
-            <p className="text-slate-500">No active alerts at this time.</p>
-          </div>
-        ) : (
-          alerts.map(alert => (
-            <div key={alert.id} className="relative group">
-              <div 
-                onClick={() => navigate(`/admin/investigation/${alert.id}`)}
-                className="cursor-pointer"
-              >
-                <AlertCard title={alert.title} type={alert.type} desc={alert.desc} />
-              </div>
-              
-              {alert.type !== 'STABLE' && (
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <Button 
-                    variant="primary" 
-                    className="h-8 px-3 text-[10px] uppercase"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleResolve(alert.id);
-                    }}
-                  >
-                    Resolve
-                  </Button>
-                </div>
-              )}
+        {/* Alert Feed List */}
+        <div className="space-y-4">
+          {alerts.length === 0 ? (
+            <div className="text-center py-20 bg-surface border border-border rounded-2xl border-dashed">
+              <span className="material-symbols-outlined text-4xl text-text-muted mb-2">notifications_off</span>
+              <p className="text-text-secondary">No active alerts at this time.</p>
             </div>
-          ))
-        )}
-      </div>
-      <div className="mt-8 md:mt-12 p-4 md:p-6 rounded-xl bg-primary bg-opacity-5 border border-primary border-opacity-10 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
-        <div className="flex items-center gap-4">
-          <div className="size-10 md:size-12 rounded-full bg-primary bg-opacity-20 flex items-center justify-center text-primary shrink-0">
-            <span className="material-symbols-outlined text-xl md:text-2xl">auto_awesome</span>
-          </div>
-          <div>
-            <h3 className="font-bold text-sm md:text-base">Need deeper analysis?</h3>
-            <p className="text-xs md:text-sm text-slate-500">Ask Prithvi AI to analyze historical trends for these alert zones.</p>
-          </div>
+          ) : (
+            alerts.map((alert) => (
+              <AlertCard 
+                key={alert.id} 
+                alert={alert} 
+                onClick={() => handleAlertClick(alert)}
+              />
+            ))
+          )}
         </div>
-        <Button variant="primary" className="text-xs md:text-sm px-6 w-full md:w-auto" onClick={() => navigate('/admin/ai')}>
-          Consult AI
-        </Button>
+
+        {/* Pagination */}
+        {alerts.length > 0 && (
+          <div className="flex items-center justify-between pt-6 border-t border-border">
+            <p className="text-sm text-text-secondary">Showing {alerts.length} of 142 alerts from last 24 hours</p>
+            <div className="flex gap-2">
+              <button className="size-8 flex items-center justify-center rounded border border-border hover:bg-panel transition-colors">
+                <span className="material-symbols-outlined text-sm">chevron_left</span>
+              </button>
+              <button className="size-8 flex items-center justify-center rounded bg-primary/20 text-primary font-bold text-sm">1</button>
+              <button className="size-8 flex items-center justify-center rounded border border-border hover:bg-panel transition-colors text-sm">2</button>
+              <button className="size-8 flex items-center justify-center rounded border border-border hover:bg-panel transition-colors text-sm">3</button>
+              <button className="size-8 flex items-center justify-center rounded border border-border hover:bg-panel transition-colors">
+                <span className="material-symbols-outlined text-sm">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
