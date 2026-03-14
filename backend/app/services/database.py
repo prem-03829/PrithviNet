@@ -5,9 +5,9 @@ import os
 
 load_dotenv()
 
-DATABASE_URL = os.getenv("postgresql://postgres.jmwvxjkaaezavqqtvhff:MhdvoSvC9WGKb8P7@aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres")
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres.jmwvxjkaaezavqqtvhff:MhdvoSvC9WGKb8P7@aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres")
 
-engine = create_engine("postgresql://postgres.jmwvxjkaaezavqqtvhff:MhdvoSvC9WGKb8P7@aws-1-ap-northeast-1.pooler.supabase.com:5432/postgres")
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(
     autocommit=False,
@@ -23,3 +23,7 @@ def get_db():
         yield db
     finally:
         db.close()
+
+def get_supabase():
+    from app.core.supabase import supabase
+    return supabase

@@ -3,13 +3,13 @@ import joblib
 import pandas as pd
 
 
-# Get base directory of the project
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Get app directory (one level up from services/)
+APP_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Model paths
-AIR_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "air_model.pkl")
-NOISE_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "noise_model.pkl")
-WATER_MODEL_PATH = os.path.join(BASE_DIR, "ai_models", "water_model.pkl")
+AIR_MODEL_PATH = os.path.join(APP_DIR, "ai_models", "air_model.pkl")
+NOISE_MODEL_PATH = os.path.join(APP_DIR, "ai_models", "noise_model.pkl")
+WATER_MODEL_PATH = os.path.join(APP_DIR, "ai_models", "water_model.pkl")
 
 
 # Load models once when server starts

@@ -1,107 +1,111 @@
-from datetime import datetime, timedelta
-from sqlalchemy.orm import Session
-from passlib.context import CryptContext
-from jose import JWTError, jwt
-
-from app.models.user import User
+import logging
+from app.core.supabase import supabase
 from app.schemas.auth_schema import RegisterRequest, LoginRequest
 
-
-# Password hashing setup
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-# JWT configuration
-SECRET_KEY = "prithvinet_super_secret_key"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
-
+# Configure logging
+logger = logging.getLogger(__name__)
 
 # -----------------------------
-# Password Utilities
+# City Utilities
 # -----------------------------
 
-def hash_password(password: str):
-    """Hash a user's password"""
-    return pwd_context.hash(password)
-
-
-def verify_password(plain_password: str, hashed_password: str):
-    """Verify password with hash"""
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-# -----------------------------
-# Token Generator
-# -----------------------------
-
-def create_access_token(data: dict):
-    """Create JWT access token"""
-
-    to_encode = data.copy()
-
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-
-    to_encode.update({"exp": expire})
-
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-
-    return encoded_jwt
-
+def get_or_create_city(city_name: str):
+    """Get city id or create if not exists in public.cities table"""
+    try:
+        # Check if city exists
+        result = supabase.table("cities").select("id").eq("name", city_name).execute()
+        if result.data:
+            return result.data[0]["id"]
+        
+        # Create city
+        new_city = supabase.table("cities").insert({"name": city_name}).execute()
+        if new_city.data:
+            return new_city.data[0]["id"]
+        return None
+    except Exception as e:
+        logger.error(f"Error in get_or_create_city: {e}")
+        return None
 
 # -----------------------------
 # Register User
 # -----------------------------
 
-def register_user(db: Session, user_data: RegisterRequest):
+def register_user(db, user_data: RegisterRequest):
+    """
+    Registers a user using Supabase Auth.
+    No local hashing - Supabase Auth handles it.
+    """
+    try:
+        # 1. Sign up with Supabase Auth
+        # Metadata is stored in auth.users (raw_user_meta_data)
+        auth_response = supabase.auth.sign_up({
+            "email": user_data.email,
+            "password": user_data.password,
+            "options": {
+                "data": {
+                    "name": user_data.name,
+                    "city": user_data.city
+                }
+            }
+        })
 
-    existing_user = db.query(User).filter(User.email == user_data.email).first()
+        if not auth_response.user:
+            return {"error": "Failed to create user account in Supabase Auth"}
 
-    if existing_user:
-        return {"error": "User with this email already exists"}
+        # 2. Synchronize with our public.users table for application logic
+        # Get city ID from our public schema
+        city_id = get_or_create_city(user_data.city)
 
-    hashed_password = hash_password(user_data.password)
+        # Note: We do NOT store password in public.users. 
+        # Supabase Auth manages it securely in the auth schema.
+        new_user_payload = {
+            "name": user_data.name,
+            "email": user_data.email,
+            "city_id": city_id
+        }
+        
+        # We can use the ID from Supabase Auth if we want them perfectly synced
+        # result = supabase.table("users").insert(new_user_payload).execute()
 
-    new_user = User(
-        name=user_data.name,
-        email=user_data.email,
-        password=hashed_password,
-        city=user_data.city
-    )
-
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    return {
-        "message": "User registered successfully",
-        "user_id": new_user.id,
-        "email": new_user.email
-    }
-
+        return {
+            "message": "User registered successfully. Please check your email for confirmation.",
+            "user": auth_response.user,
+            "session": auth_response.session
+        }
+    except Exception as e:
+        logger.error(f"Registration error: {e}")
+        return {"error": str(e)}
 
 # -----------------------------
 # Login User
 # -----------------------------
 
-def authenticate_user(db: Session, login_data: LoginRequest):
+def authenticate_user(db, login_data: LoginRequest):
+    """
+    Authenticates a user using Supabase Auth.
+    No local hashing/verification - Supabase Auth handles it.
+    """
+    try:
+        # Sign in with email and raw password
+        auth_response = supabase.auth.sign_in_with_password({
+            "email": login_data.email,
+            "password": login_data.password
+        })
 
-    user = db.query(User).filter(User.email == login_data.email).first()
+        if not auth_response.session:
+            return {"error": "Invalid credentials or email not confirmed"}
 
-    if not user:
-        return {"error": "User not found"}
-
-    if not verify_password(login_data.password, user.password):
-        return {"error": "Invalid password"}
-
-    token = create_access_token(
-        {
-            "sub": str(user.id),
-            "email": user.email
+        return {
+            "message": "Login successful",
+            "access_token": auth_response.session.access_token,
+            "token_type": "bearer",
+            "user": auth_response.user,
+            "session": auth_response.session
         }
-    )
-
-    return {
-        "message": "Login successful",
-        "access_token": token,
-        "token_type": "bearer"
-    }
+    except Exception as e:
+        logger.error(f"Authentication error: {e}")
+        # Clean up Supabase error messages if they contain technical details
+        error_msg = str(e)
+        if "Invalid login credentials" in error_msg:
+            error_msg = "Invalid email or password"
+        return {"error": error_msg}
