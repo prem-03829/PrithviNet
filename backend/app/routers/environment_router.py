@@ -42,10 +42,14 @@ class NoiseData(BaseModel):
 
 
 class WaterData(BaseModel):
-    ph: float
-    turbidity: float
-    dissolved_oxygen: float
-    conductivity: float
+    Temp: float
+    DO: float
+    pH: float
+    BOD: float
+    Nitrate: float
+    Conductivity: float
+    Fecal: float
+    TotalColiform: float
 
 
 # -----------------------------
@@ -76,10 +80,4 @@ def noise_prediction(data: NoiseData):
 
 @router.post("/predict-water")
 def water_prediction(data: WaterData):
-
-    result = predict_water(data.dict())
-
-    return {
-        "status": "success",
-        "data": result
-    }
+    return predict_water(data.dict())

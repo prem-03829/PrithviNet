@@ -72,12 +72,39 @@ def predict_noise(data: dict):
 # WATER POLLUTION PREDICTION
 # -----------------------------
 def predict_water(data: dict):
+    try:
 
-    df = pd.DataFrame([data])
+        # EXACT order used during training
+        columns = [
+            "Temp",
+            "DO",
+            "pH",
+            "Conductivity",
+            "BOD",
+            "Nitrate",
+            "Fecal",
+            "TotalColiform"
+        ]
 
-    prediction = water_model.predict(df)
+        # Default temperature if not provided
+        if "Temp" not in data:
+            data["Temp"] = 25
 
-    return {
-        "pollution_type": "water",
-        "prediction": float(prediction[0])
-    }
+        # Create dataframe in exact order
+        df = pd.DataFrame([[data.get(col, 0) for col in columns]], columns=columns)
+
+        prediction = water_model.predict(df)
+
+        return {
+            "status": "success",
+            "data": {
+                "pollution_type": "water",
+                "prediction": prediction[0]
+            }
+        }
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
