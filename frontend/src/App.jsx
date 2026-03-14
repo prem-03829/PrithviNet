@@ -19,6 +19,7 @@ import PolicyInsights from './pages/PolicyInsights';
 import Alerts from './pages/Alerts';
 import Reports from './pages/Reports';
 import SubmitReport from './pages/SubmitReport';
+import GovernmentSystemMonitoring from './pages/GovernmentSystemMonitoring';
 import AIAssistant from './pages/AIAssistant';
 import MyComplaints from './pages/MyComplaints';
 import FileComplaint from './pages/FileComplaint';
@@ -84,7 +85,7 @@ function App() {
             <Route path="notifications" element={<DummyPage title="Notifications" />} />
           </Route>
 
-          {/* Official Routes */}
+          {/* Official Routes (Government) */}
           <Route path="/official" element={<OfficialLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
@@ -94,6 +95,7 @@ function App() {
             <Route path="alerts" element={<Alerts />} />
             <Route path="ai" element={<AIAssistant />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="monitoring" element={<GovernmentSystemMonitoring />} />
             <Route path="investigation/:id" element={<InvestigationDetail />} />
             <Route path="profile" element={<Profile />} />
             <Route path="profile/edit" element={<EditProfile />} />

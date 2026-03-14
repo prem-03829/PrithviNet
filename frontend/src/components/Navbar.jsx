@@ -33,8 +33,8 @@ export default function Navbar({ role }) {
   const isIndustry = normalizedRole === 'industry';
   const isGovernment = normalizedRole === 'government' || normalizedRole === 'admin';
 
-  const basePath = isCitizen ? '/citizen' : isIndustry ? '/industry' : '/admin';
-  const headerTitle = isIndustry ? "Industry Portal" : isGovernment ? "Admin Console" : "Dashboard";
+  const basePath = isCitizen ? '/citizen' : isIndustry ? '/industry' : '/official';
+  const headerTitle = isIndustry ? "Industry Portal" : isGovernment ? "Government Command Center" : "Dashboard";
 
   const menuItems = isCitizen ? [
     { label: 'My Profile', to: `${basePath}/profile`, icon: 'account_circle' },
