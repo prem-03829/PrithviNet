@@ -10,7 +10,9 @@ import LocationPermissionModal from './components/LocationPermissionModal';
 import Dashboard from './pages/Dashboard';
 import PollutionMap from './pages/PollutionMap';
 import Compliance from './pages/Compliance';
+import PolicyInsights from './pages/PolicyInsights';
 import Alerts from './pages/Alerts';
+import Reports from './pages/Reports';
 import AIAssistant from './pages/AIAssistant';
 import MyComplaints from './pages/MyComplaints';
 import FileComplaint from './pages/FileComplaint';
@@ -59,13 +61,14 @@ function App() {
 
           {/* Admin Routes */}
           <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="map" element={<PollutionMap isAdmin={true} />} />
             <Route path="compliance" element={<Compliance />} />
-            <Route path="policy" element={<DummyPage title="Policy Insights" />} />
+            <Route path="policy" element={<PolicyInsights />} />
             <Route path="alerts" element={<Alerts />} />
             <Route path="ai" element={<AIAssistant />} />
-            <Route path="reports" element={<DummyPage title="Reports" />} />
+            <Route path="reports" element={<Reports />} />
             <Route path="investigation/:id" element={<InvestigationDetail />} />
             <Route path="awareness" element={<DummyPage title="Awareness & Data" />} />
             <Route path="profile" element={<Profile />} />

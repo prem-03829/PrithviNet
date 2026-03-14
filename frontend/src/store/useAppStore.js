@@ -309,6 +309,110 @@ export const useAppStore = create((set, get) => ({
       }
     }
   ],
+
+  policyData: [
+    {
+      id: "POL-001",
+      title: "Emission Control Act 2024",
+      category: "Air Quality",
+      impact_score: 85,
+      status: "active",
+      description: "Strict mandates on industrial particulate matter discharge.",
+      last_updated: "2024-02-15T10:00:00Z",
+      region: "National"
+    },
+    {
+      id: "POL-002",
+      title: "River Basin Protection Initiative",
+      category: "Water Conservation",
+      impact_score: 65,
+      status: "under_review",
+      description: "Proposed buffer zones around major river ecosystems.",
+      last_updated: "2024-03-01T14:30:00Z",
+      region: "North India"
+    },
+    {
+      id: "POL-003",
+      title: "Noise Abatement in School Zones",
+      category: "Urban Noise",
+      impact_score: 45,
+      status: "active",
+      description: "Implementing silent zones around educational institutions.",
+      last_updated: "2023-12-10T09:00:00Z",
+      region: "Metropolitan Areas"
+    },
+    {
+      id: "POL-004",
+      title: "Industrial Effluent Standardization",
+      category: "Water Quality",
+      impact_score: 92,
+      status: "high_risk",
+      description: "Current standards failing to address emerging chemical pollutants.",
+      last_updated: "2024-03-10T16:45:00Z",
+      region: "Industrial Corridors"
+    },
+    {
+      id: "POL-005",
+      title: "Vehicle Scrappage Policy Phase 2",
+      category: "Transport",
+      impact_score: 78,
+      status: "under_review",
+      description: "Incentivizing transition to electric public transport fleets.",
+      last_updated: "2024-03-12T11:20:00Z",
+      region: "Tier 1 Cities"
+    }
+  ],
+
+  reportsData: [
+    {
+      id: "REP-2024-001",
+      title: "Quarterly Air Quality Assessment",
+      date: "2024-03-10T09:00:00Z",
+      type: "Air Quality",
+      category: "Air",
+      metrics: {
+        avg_aqi: 142,
+        peak_aqi: 310,
+        improvement: 12.5
+      },
+      severity: "Medium",
+      trend: "Improving",
+      file_size: "2.4 MB",
+      status: "Finalized"
+    },
+    {
+      id: "REP-2024-002",
+      title: "Yamuna River Heavy Metal Analysis",
+      date: "2024-03-12T14:20:00Z",
+      type: "Water Analysis",
+      category: "Water",
+      metrics: {
+        lead_levels: 0.05,
+        mercury_levels: 0.002,
+        variance: 4.2
+      },
+      severity: "High",
+      trend: "Degrading",
+      file_size: "4.1 MB",
+      status: "Review Required"
+    },
+    {
+      id: "REP-2024-003",
+      title: "Noise Pollution Impact Study",
+      date: "2024-03-05T11:15:00Z",
+      type: "Urban Noise",
+      category: "Noise",
+      metrics: {
+        avg_db: 68,
+        night_peaks: 82,
+        compliance_rate: 94
+      },
+      severity: "Low",
+      trend: "Stable",
+      file_size: "1.8 MB",
+      status: "Finalized"
+    }
+  ],
   
   // Filters
   mapFilter: 'air',
@@ -331,6 +435,10 @@ export const useAppStore = create((set, get) => ({
 
   updateInvestigationStatus: (id, status) => set((state) => ({
     investigations: state.investigations.map(inv => inv.id === id ? { ...inv, status } : inv)
+  })),
+
+  addReport: (report) => set((state) => ({
+    reportsData: [{ ...report, id: `REP-${Date.now()}`, date: new Date().toISOString() }, ...state.reportsData]
   })),
 
   // Real-time updates simulation
