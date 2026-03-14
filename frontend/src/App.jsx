@@ -4,12 +4,12 @@ import { useEffect } from 'react';
 // Layouts
 import AdminLayout from './layouts/AdminLayout';
 import OfficialLayout from './layouts/OfficialLayout';
-import AuthorityLayout from './layouts/AuthorityLayout';
-import InspectorLayout from './layouts/InspectorLayout';
+import IndustryLayout from './layouts/IndustryLayout';
 import CitizenLayout from './layouts/CitizenLayout';
 
 // Components
 import LocationPermissionModal from './components/LocationPermissionModal';
+import ErrorBoundary from './components/ErrorBoundary';
 
 // Pages
 import Dashboard from './pages/Dashboard';
@@ -18,6 +18,7 @@ import Compliance from './pages/Compliance';
 import PolicyInsights from './pages/PolicyInsights';
 import Alerts from './pages/Alerts';
 import Reports from './pages/Reports';
+import SubmitReport from './pages/SubmitReport';
 import AIAssistant from './pages/AIAssistant';
 import MyComplaints from './pages/MyComplaints';
 import FileComplaint from './pages/FileComplaint';
@@ -58,7 +59,7 @@ function App() {
   }, [simulatePollution, simulateStatusUpdates]);
 
   return (
-    <>
+    <ErrorBoundary>
       <Router>
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
@@ -100,33 +101,16 @@ function App() {
             <Route path="notifications" element={<DummyPage title="Notifications" />} />
           </Route>
 
-          {/* Authority Routes */}
-          <Route path="/authority" element={<AuthorityLayout />}>
+          {/* Industry Routes */}
+          <Route path="/industry" element={<IndustryLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="map" element={<PollutionMap isAdmin={true} />} />
+            <Route path="map" element={<PollutionMap isAdmin={false} />} />
             <Route path="compliance" element={<Compliance />} />
             <Route path="policy" element={<PolicyInsights />} />
             <Route path="alerts" element={<Alerts />} />
             <Route path="ai" element={<AIAssistant />} />
-            <Route path="reports" element={<Reports />} />
-            <Route path="investigation/:id" element={<InvestigationDetail />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="profile/edit" element={<EditProfile />} />
-            <Route path="settings" element={<Settings />} />
-            <Route path="notifications" element={<DummyPage title="Notifications" />} />
-          </Route>
-
-          {/* Inspector Routes */}
-          <Route path="/inspector" element={<InspectorLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="map" element={<PollutionMap isAdmin={true} />} />
-            <Route path="compliance" element={<Compliance />} />
-            <Route path="policy" element={<PolicyInsights />} />
-            <Route path="alerts" element={<Alerts />} />
-            <Route path="ai" element={<AIAssistant />} />
-            <Route path="reports" element={<Reports />} />
+            <Route path="submit-report" element={<SubmitReport />} />
             <Route path="investigation/:id" element={<InvestigationDetail />} />
             <Route path="profile" element={<Profile />} />
             <Route path="profile/edit" element={<EditProfile />} />
@@ -147,10 +131,13 @@ function App() {
             <Route path="notifications" element={<DummyPage title="Notifications" />} />
             <Route path="ai-assistant" element={<AIAssistant />} />
           </Route>
+
+          {/* Catch-all redirect */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
       <LocationPermissionModal />
-    </>
+    </ErrorBoundary>
   );
 }
 

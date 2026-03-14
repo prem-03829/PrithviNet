@@ -19,6 +19,7 @@ export default function Dashboard() {
   const { complaints } = useComplaintStore();
   const { alerts } = useAppStore();
   const { user } = useUserStore();
+  const isIndustry = user?.role === 'Industry';
 
   const avgAqi =
     (sensors || []).length > 0
@@ -27,74 +28,82 @@ export default function Dashboard() {
 
   const activeAlerts = (alerts || []).filter((a) => a?.severity?.toLowerCase() === "critical").length;
 
-  const tableHeaders = [
-    "Facility Name",
-    "Risk Level",
-    "Primary Pollutant",
-    "Status",
-    "Action",
-  ];
-  const tableData = [
-    {
-      id: "inv-1",
-      name: "Apex Manufacturing Co.",
-      risk: "High",
-      pollutant: "Sulfur Dioxide",
-      status: "Investigation",
-    },
-    {
-      id: "inv-2",
-      name: "Green Energy Refinery",
-      risk: "Moderate",
-      pollutant: "Carbon Monoxide",
-      status: "Monitored",
-    },
-    {
-      id: "inv-3",
-      name: "City Waste Management",
-      risk: "Low",
-      pollutant: "Methane",
-      status: "Closed",
-    },
+  const tableHeaders = isIndustry 
+    ? ["Report ID", "Submission Type", "Date", "Status", "Action"]
+    : ["Facility Name", "Risk Level", "Primary Pollutant", "Status", "Action"];
+
+  const industryData = [
+    { id: "REP-991", type: "Emission Data", date: "2024-03-14", status: "Approved" },
+    { id: "REP-992", type: "Safety Audit", date: "2024-03-10", status: "Pending" },
+    { id: "REP-993", type: "Water Usage", date: "2024-02-28", status: "Rejected" },
   ];
 
-  const renderRow = (row, idx) => (
-    <tr
-      key={idx}
-      className="hover:bg-panel dark:hover:bg-panel transition-colors group"
-    >
-      <td className="px-6 py-4 font-medium text-text-primary">{row.name}</td>
-      <td className="px-6 py-4 text-text-secondary">
-        <span
-          className={`inline-block size-2 rounded-full mr-2 ${row.risk === "High" ? "bg-red-500" : row.risk === "Moderate" ? "bg-yellow-500" : "bg-primary"}`}
-        ></span>
-        {row.risk}
-      </td>
-      <td className="px-6 py-4 text-text-secondary">{row.pollutant}</td>
-      <td className="px-6 py-4">
-        <Badge
-          variant={
-            row.risk === "High"
-              ? "danger"
-              : row.risk === "Moderate"
-                ? "warning"
-                : "success"
-          }
-        >
-          {row.status}
-        </Badge>
-      </td>
-      <td className="px-6 py-4">
-        <button
-          onClick={() => navigate(`${basePath}/investigation/${row.id}`)}
-          className="p-1 text-text-secondary hover:text-primary transition-colors"
-          title="View Investigation Details"
-        >
-          <span className="material-symbols-outlined text-xl">open_in_new</span>
-        </button>
-      </td>
-    </tr>
-  );
+  const govData = [
+    { id: "inv-1", name: "Apex Manufacturing Co.", risk: "High", pollutant: "Sulfur Dioxide", status: "Investigation" },
+    { id: "inv-2", name: "Green Energy Refinery", risk: "Moderate", pollutant: "Carbon Monoxide", status: "Monitored" },
+    { id: "inv-3", name: "City Waste Management", risk: "Low", pollutant: "Methane", status: "Closed" },
+  ];
+
+  const tableData = isIndustry ? industryData : govData;
+
+  const renderRow = (row, idx) => {
+    if (isIndustry) {
+      return (
+        <tr key={idx} className="hover:bg-panel dark:hover:bg-panel transition-colors group">
+          <td className="px-6 py-4 font-bold text-primary">{row.id}</td>
+          <td className="px-6 py-4 text-text-primary font-medium">{row.type}</td>
+          <td className="px-6 py-4 text-text-secondary">{row.date}</td>
+          <td className="px-6 py-4">
+            <Badge variant={row.status === 'Approved' ? 'success' : row.status === 'Pending' ? 'warning' : 'danger'}>
+              {row.status}
+            </Badge>
+          </td>
+          <td className="px-6 py-4">
+            <button className="p-1 text-text-secondary hover:text-primary transition-colors">
+              <span className="material-symbols-outlined text-xl">visibility</span>
+            </button>
+          </td>
+        </tr>
+      );
+    }
+    return (
+      <tr
+        key={idx}
+        className="hover:bg-panel dark:hover:bg-panel transition-colors group"
+      >
+        <td className="px-6 py-4 font-medium text-text-primary">{row.name}</td>
+        <td className="px-6 py-4 text-text-secondary">
+          <span
+            className={`inline-block size-2 rounded-full mr-2 ${row.risk === "High" ? "bg-red-500" : row.risk === "Moderate" ? "bg-yellow-500" : "bg-primary"}`}
+          ></span>
+          {row.risk}
+        </td>
+        <td className="px-6 py-4 text-text-secondary">{row.pollutant}</td>
+        <td className="px-6 py-4">
+          <Badge
+            variant={
+              row.risk === "High"
+                ? "danger"
+                : row.risk === "Moderate"
+                  ? "warning"
+                  : "success"
+            }
+          >
+            {row.status}
+          </Badge>
+        </td>
+        <td className="px-6 py-4">
+          <button
+            onClick={() => navigate(`${basePath}/investigation/${row.id}`)}
+            className="p-1 text-text-secondary hover:text-primary transition-colors"
+            title="View Investigation Details"
+          >
+            <span className="material-symbols-outlined text-xl">open_in_new</span>
+          </button>
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div className="flex flex-col w-full h-full overflow-y-auto custom-scrollbar p-4 md:p-8 space-y-6 md:space-y-8 animate-in fade-in duration-500 max-w-[1600px] mx-auto">
@@ -107,7 +116,7 @@ export default function Dashboard() {
           )}
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-text-primary leading-tight">
-              Welcome back, {user?.name?.split(' ')[0]}
+              {isIndustry ? `Entity: ${user?.industryId?.toUpperCase()}` : `Welcome back, ${user?.name?.split(' ')[0]}`}
             </h2>
             {user && (
               <div className="flex items-center gap-2 mt-0.5 text-text-secondary text-xs md:text-sm">
@@ -115,14 +124,14 @@ export default function Dashboard() {
                   location_on
                 </span>
                 <span>
-                  {user.city}
+                  {user.city} {isIndustry && "• Plant Operations"}
                 </span>
               </div>
             )}
           </div>
         </div>
         <div className="flex items-center justify-between sm:justify-end gap-2 px-3 py-1.5 rounded-full bg-panel dark:bg-panel border border-border dark:border-border cursor-pointer hover:bg-panel transition-colors w-full sm:w-auto text-text-secondary">
-          <span className="text-xs md:text-sm font-medium">All Regions</span>
+          <span className="text-xs md:text-sm font-medium">{isIndustry ? "All Subsidaries" : "All Regions"}</span>
           <span className="material-symbols-outlined text-sm">expand_more</span>
         </div>
       </div>
@@ -130,27 +139,27 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         <div onClick={() => navigate(`${basePath}/map`)} className="cursor-pointer">
           <KpiCard
-            title="Regional Pollution Summary"
-            icon="air"
-            value={`AQI ${avgAqi}`}
-            subtitle={avgAqi < 100 ? "Satisfactory" : "Unhealthy"}
-            trend="-5% vs last week"
-            trendIcon="trending_down"
+            title={isIndustry ? "Internal Compliance Score" : "Regional Pollution Summary"}
+            icon={isIndustry ? "verified" : "air"}
+            value={isIndustry ? "94/100" : `AQI ${avgAqi}`}
+            subtitle={isIndustry ? "Highly Compliant" : (avgAqi < 100 ? "Satisfactory" : "Unhealthy")}
+            trend={isIndustry ? "+2% vs last month" : "-5% vs last week"}
+            trendIcon={isIndustry ? "trending_up" : "trending_down"}
             trendColor="text-green-500"
           />
         </div>
         <div
-          onClick={() => navigate("/citizen/my-complaints")}
+          onClick={() => navigate(isIndustry ? `${basePath}/submit-report` : "/citizen/my-complaints")}
           className="cursor-pointer"
         >
           <KpiCard
-            title="Complaint Volume"
-            icon="forum"
-            value={`+${complaints.length}`}
-            subtitle="Total Reports"
+            title={isIndustry ? "Pending Submissions" : "Complaint Volume"}
+            icon={isIndustry ? "upload_file" : "forum"}
+            value={isIndustry ? "02" : `+${complaints.length}`}
+            subtitle={isIndustry ? "Due in 4 days" : "Total Reports"}
             trend="Recent updates"
             trendIcon="trending_up"
-            trendColor="text-red-500"
+            trendColor={isIndustry ? "text-primary" : "text-red-500"}
           />
         </div>
         <div
@@ -158,13 +167,13 @@ export default function Dashboard() {
           className="cursor-pointer sm:col-span-2 lg:col-span-1"
         >
           <KpiCard
-            title="Active Investigations"
-            icon="search_check"
-            value={`${activeAlerts}`}
-            subtitle="Alerts Pending"
-            trend="Requires attention"
-            trendIcon="warning"
-            trendColor="text-orange-500"
+            title={isIndustry ? "Violation Alerts" : "Active Investigations"}
+            icon="warning"
+            value={isIndustry ? "00" : `${activeAlerts}`}
+            subtitle={isIndustry ? "No critical breaches" : "Alerts Pending"}
+            trend="Live monitoring"
+            trendIcon="sensors"
+            trendColor="text-primary"
           />
         </div>
       </div>
@@ -174,23 +183,23 @@ export default function Dashboard() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex flex-col">
               <h3 className="text-base md:text-lg font-bold text-text-primary">
-                Pollution Trends vs Complaint Volume
+                {isIndustry ? "Plant Emission Trend (Real-time)" : "Pollution Trends vs Complaint Volume"}
               </h3>
               <p className="text-xs md:text-sm text-text-secondary">
-                30-day comparative analysis
+                {isIndustry ? "Monitoring stacks A1 to D4" : "30-day comparative analysis"}
               </p>
             </div>
             <div className="flex gap-4">
               <div className="flex items-center gap-2">
                 <span className="size-2 rounded-full bg-primary"></span>
                 <span className="text-[10px] md:text-xs font-medium uppercase text-text-secondary">
-                  Pollution
+                  {isIndustry ? "Emissions" : "Pollution"}
                 </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="size-2 rounded-full bg-text-muted"></span>
                 <span className="text-[10px] md:text-xs font-medium uppercase text-text-secondary">
-                  Complaints
+                  {isIndustry ? "Threshold" : "Complaints"}
                 </span>
               </div>
             </div>
@@ -206,26 +215,36 @@ export default function Dashboard() {
               auto_awesome
             </span>
             <h3 className="text-lg font-bold text-text-primary">
-              Nearby Alerts
+              {isIndustry ? "Compliance Advisor" : "Nearby Alerts"}
             </h3>
           </div>
           <div className="space-y-4 flex-1 overflow-y-auto pr-1 custom-scrollbar max-h-[400px]">
-            {(!alerts || alerts.length === 0) ? (
-              <p className="text-sm text-text-secondary text-center py-4">
-                No active alerts
-              </p>
+            {isIndustry ? (
+              <div className="p-4 bg-panel rounded-xl border border-border space-y-3">
+                <p className="text-xs font-bold text-primary uppercase">Risk Analysis</p>
+                <p className="text-sm text-text-primary leading-relaxed">
+                  Based on current emission trends, stack B2 might exceed SO2 thresholds in 48 hours. Suggest preemptive filter cleaning.
+                </p>
+                <Button variant="outline" className="w-full text-xs" onClick={() => navigate(`${basePath}/ai`)}>Get Detailed Plan</Button>
+              </div>
             ) : (
-              alerts.map((alert) => (
-                <div
-                  key={alert?.id}
-                  onClick={() => navigate(`${basePath}/alerts`)}
-                  className="cursor-pointer"
-                >
-                  <AlertCard
-                    alert={alert}
-                  />
-                </div>
-              ))
+              (!alerts || alerts.length === 0) ? (
+                <p className="text-sm text-text-secondary text-center py-4">
+                  No active alerts
+                </p>
+              ) : (
+                alerts.map((alert) => (
+                  <div
+                    key={alert?.id}
+                    onClick={() => navigate(`${basePath}/alerts`)}
+                    className="cursor-pointer"
+                  >
+                    <AlertCard
+                      alert={alert}
+                    />
+                  </div>
+                ))
+              )
             )}
           </div>
           <div className="flex flex-col sm:flex-row lg:flex-col gap-3">
@@ -235,13 +254,13 @@ export default function Dashboard() {
               onClick={() => navigate(`${basePath}/ai`)}
             >
               <span className="material-symbols-outlined text-sm">robot_2</span>
-              AI Assistant
+              {isIndustry ? "AI Compliance Advisor" : "AI Assistant"}
             </Button>
             <Button
               variant="primary"
               className="w-full text-xs md:text-sm flex-1"
             >
-              Generate Strategy Report
+              {isIndustry ? "Export Audit PDF" : "Generate Strategy Report"}
             </Button>
           </div>
         </Card>
@@ -250,10 +269,10 @@ export default function Dashboard() {
       <Card className="p-0 overflow-hidden">
         <div className="p-4 md:p-6 border-b border-border dark:border-border flex items-center justify-between">
           <h3 className="text-base md:text-lg font-bold text-text-primary">
-            Recent Compliance Incidents
+            {isIndustry ? "Recent Compliance Submissions" : "Recent Compliance Incidents"}
           </h3>
           <button
-            onClick={() => navigate(`${basePath}/compliance`)}
+            onClick={() => navigate(isIndustry ? `${basePath}/submit-report` : `${basePath}/compliance`)}
             className="text-xs md:text-sm text-primary font-medium hover:underline"
           >
             View all

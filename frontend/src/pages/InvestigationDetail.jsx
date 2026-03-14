@@ -5,6 +5,7 @@ import Timeline from '../components/Timeline';
 import Card from '../components/Card';
 import Button from '../components/Button';
 import Badge from '../components/Badge';
+import RoleGate from '../components/RoleGate';
 
 export default function InvestigationDetail() {
   const { id } = useParams();
@@ -60,10 +61,13 @@ export default function InvestigationDetail() {
                 Satellite telemetry detected particulate matter spikes at 45% above safety threshold. High-resolution imagery confirms active stacks during unauthorized hours.
               </div>
             </div>
-            <div className="flex flex-wrap gap-3 md:gap-4">
-              <Button variant="primary" className="text-xs md:text-sm flex-1 sm:flex-none" onClick={() => alert("Closing case...")}>Close Case</Button>
-              <Button variant="secondary" className="text-xs md:text-sm flex-1 sm:flex-none" onClick={() => alert("Generating citation...")}>Issue Citation</Button>
-            </div>
+            
+            <RoleGate roles={['government', 'admin']}>
+              <div className="flex flex-wrap gap-3 md:gap-4">
+                <Button variant="primary" className="text-xs md:text-sm flex-1 sm:flex-none" onClick={() => alert("Closing case...")}>Close Case</Button>
+                <Button variant="secondary" className="text-xs md:text-sm flex-1 sm:flex-none" onClick={() => alert("Generating citation...")}>Issue Citation</Button>
+              </div>
+            </RoleGate>
           </Card>
 
           <Card className="space-y-4">
@@ -85,7 +89,9 @@ export default function InvestigationDetail() {
               Activity Log
             </h3>
             <Timeline events={data.timeline} />
-            <Button variant="outline" className="w-full mt-4 text-xs" onClick={() => alert("Log update logic here")}>Add Activity Note</Button>
+            <RoleGate roles={['government', 'admin']}>
+              <Button variant="outline" className="w-full mt-4 text-xs" onClick={() => alert("Log update logic here")}>Add Activity Note</Button>
+            </RoleGate>
           </Card>
         </div>
       </div>

@@ -28,8 +28,13 @@ export default function Navbar({ role }) {
     navigate('/login');
   };
 
-  const isCitizen = user?.role === 'citizen' || role === 'Citizen';
-  const basePath = isCitizen ? '/citizen' : '/admin';
+  const normalizedRole = user?.role?.toLowerCase();
+  const isCitizen = normalizedRole === 'citizen';
+  const isIndustry = normalizedRole === 'industry';
+  const isGovernment = normalizedRole === 'government' || normalizedRole === 'admin';
+
+  const basePath = isCitizen ? '/citizen' : isIndustry ? '/industry' : '/admin';
+  const headerTitle = isIndustry ? "Industry Portal" : isGovernment ? "Admin Console" : "Dashboard";
 
   const menuItems = isCitizen ? [
     { label: 'My Profile', to: `${basePath}/profile`, icon: 'account_circle' },
@@ -51,14 +56,14 @@ export default function Navbar({ role }) {
         >
           <span className="material-symbols-outlined">menu</span>
         </button>
-        <h2 className="text-lg md:text-xl font-bold hidden sm:block text-text-primary">Dashboard</h2>
+        <h2 className="text-lg md:text-xl font-bold hidden sm:block text-text-primary">{headerTitle}</h2>
       </div>
 
       <div className="flex items-center gap-4">
         <ThemeToggle />
-        {role && (
+        {user?.role && (
           <div className="px-3 py-1 bg-primary bg-opacity-20 text-primary text-xs font-bold rounded-full uppercase tracking-wider border border-primary border-opacity-30 hidden sm:block">
-            {role}
+            {user.role}
           </div>
         )}
         <button className="relative p-2 text-text-secondary hover:text-primary transition-colors" aria-label="Notifications">

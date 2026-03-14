@@ -70,7 +70,7 @@ export default function Profile() {
         <div className="flex-1 text-center md:text-left space-y-2">
           <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-3">
             <h2 className="text-2xl md:text-3xl font-black tracking-tight">{user.name}</h2>
-            <Badge variant="primary" className="w-fit mx-auto md:mx-0 scale-90 md:scale-100">Citizen Reporter</Badge>
+            <Badge variant="primary" className="w-fit mx-auto md:mx-0 scale-90 md:scale-100">{user.role}</Badge>
           </div>
           <p className="text-sm md:text-base text-text-secondary font-medium flex items-center justify-center md:justify-start gap-2">
             <span className="material-symbols-outlined text-sm">location_on</span>

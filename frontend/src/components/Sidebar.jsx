@@ -6,7 +6,14 @@ import { useUserStore } from '../store/useUserStore';
 export default function Sidebar({ title, links, logo, fixed, role }) {
   const { sidebarOpen, setSidebarOpen, mobileMenuOpen, setMobileMenuOpen } = useAppStore();
   const { user } = useUserStore();
-  const settingsPath = role === 'Citizen' ? '/citizen/settings' : '/admin/settings';
+  
+  const normalizedRole = user?.role?.toLowerCase();
+  const isIndustry = normalizedRole === 'industry';
+  const isGovernment = normalizedRole === 'government' || normalizedRole === 'admin';
+  const isCitizen = normalizedRole === 'citizen';
+
+  const displayTitle = title || (isIndustry ? "Industry Portal" : isGovernment ? "Admin Console" : "Citizen Portal");
+  const settingsPath = isCitizen ? '/citizen/settings' : isIndustry ? '/industry/settings' : '/admin/settings';
 
   return (
     <>
@@ -34,7 +41,7 @@ export default function Sidebar({ title, links, logo, fixed, role }) {
           {sidebarOpen && (
             <div className="flex flex-col animate-in fade-in slide-in-from-left-2">
               <h1 className="text-lg font-bold leading-none">PrithviNet</h1>
-              <span className="text-xs text-text-muted font-medium">{title}</span>
+              <span className="text-xs text-text-muted font-medium">{displayTitle}</span>
             </div>
           )}
         </div>
@@ -84,7 +91,7 @@ export default function Sidebar({ title, links, logo, fixed, role }) {
             {sidebarOpen && (
               <div className="min-w-0 animate-in fade-in slide-in-from-left-2">
                 <p className="text-xs font-bold text-text-primary truncate">{user?.name}</p>
-                <p className="text-[10px] text-text-muted truncate font-medium">{user?.role}</p>
+                <p className="text-[10px] text-text-muted truncate font-medium uppercase">{user?.role}</p>
               </div>
             )}
           </div>

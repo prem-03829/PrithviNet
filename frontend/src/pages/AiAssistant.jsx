@@ -3,10 +3,25 @@ import { useUserStore } from '../store/useUserStore';
 
 export default function AIAssistant() {
   const { user } = useUserStore();
+  const isIndustry = user?.role === 'Industry';
+  const isGovernment = user?.role === 'Government' || user?.role === 'Admin';
+
+  const getInitialMessage = () => {
+    if (isIndustry) return "Hello! I'm your PrithviNet Compliance Advisor. I can help you analyze emission trends, predict violation risks, and interpret regulatory standards for your facility. How can I assist with your compliance goals today?";
+    if (isGovernment) return "Greetings, Administrator. PrithviNet Intelligence is online. I'm ready to highlight non-compliant entities, identify regional hotspots, and suggest policy interventions based on current data. Which jurisdiction shall we analyze?";
+    return "Hello! I'm your PrithviNet assistant. I can explain local pollution impacts on your health and guide you through environmental data. How can I help you stay informed and safe today?";
+  };
+
+  const getSuggestedPrompts = () => {
+    if (isIndustry) return ['Violation risk forecast', 'Analyze stack B2', 'Compliance deadline', 'Mitigation plan'];
+    if (isGovernment) return ['Identify hotspots', 'Compliance overview', 'Predict next breach', 'Export summary'];
+    return ['AQI health impact', 'Report pollution', 'Compare cities', 'Stay safe tips'];
+  };
+
   const [messages, setMessages] = useState([
     {
       role: 'ai',
-      content: "Hello! I'm your PrithviNet assistant. I have access to your satellite imagery, terrain models, and IoT sensor networks. How can I help you with your geospatial data today?",
+      content: getInitialMessage(),
     }
   ]);
   const [input, setInput] = useState('');
@@ -122,7 +137,7 @@ export default function AIAssistant() {
         <div className="w-full max-w-[1400px] mx-auto space-y-4 md:space-y-6">
           {/* Suggested Prompts */}
           <div className="flex flex-wrap gap-2 justify-center">
-            {['Detailed breakdown', 'Export CSV', 'Compare years'].map((prompt) => (
+            {getSuggestedPrompts().map((prompt) => (
               <button
                 key={prompt}
                 onClick={() => setInput(prompt)}

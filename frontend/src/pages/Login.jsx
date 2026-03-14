@@ -23,15 +23,17 @@ export default function Login() {
       navigate('/citizen/map');
     } else if (role === 'authority') {
       setUser({
-        id: 'AUTH-101',
-        name: 'Inspector Verma',
-        email: 'verma.insp@gov.in',
-        role: 'Authority / Inspector',
+        id: 'IND-772',
+        name: 'Industrial Safety Officer',
+        email: 'safety@apex-mfg.com',
+        role: 'Industry',
+        industryId: 'apex-mfg',
+        plantIds: ['plant-01', 'plant-02'],
         avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp3fcDeYLg208bCk0ztIFblaK2xJzNeUZTKZaoF4Rhzs9-3IcYa8eeuAMq7cW26OCsYm5AZ2GmyrJPsb5Pu8T1m43GQA1XirbTDgvQnxGZUnc22i2cXFsQACOdcN0-vmGqAifS_N6JBjyf6SkeMsjrdoDSecHnIWbZTegcrTg9yxIbBcpHyNxZCAwlJpZOndgqi0McYgUc4x428LxOJjjbeRqAiXIk6_C3_70J8k1pRJ6e6hD0kMVTxWkVI3az7KqoQndy2tUkv1c',
-        city: 'Delhi',
+        city: 'Mumbai',
         phone: '+91 99887 76655'
       });
-      navigate('/authority/dashboard');
+      navigate('/industry/dashboard');
     } else if (role === 'government') {
       setUser({
         id: 'GOV-202',
@@ -119,7 +121,7 @@ export default function Login() {
               <div className="relative">
                 <select name="role" className="w-full h-11 md:h-12 bg-panel dark:bg-app/80 border border-border dark:border-border rounded-lg px-4 appearance-none focus:ring-2 focus:ring-primary outline-none transition-all text-sm">
                   <option value="citizen">Citizen</option>
-                  <option value="authority">Authority / Inspector</option>
+                  <option value="authority">Industry</option>
                   <option value="government">Government Official</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-muted">

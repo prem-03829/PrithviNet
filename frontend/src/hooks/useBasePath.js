@@ -5,6 +5,7 @@ export function useBasePath() {
   
   if (location.pathname.startsWith('/admin')) return '/admin';
   if (location.pathname.startsWith('/official')) return '/official';
+  if (location.pathname.startsWith('/industry')) return '/industry';
   if (location.pathname.startsWith('/authority')) return '/authority';
   if (location.pathname.startsWith('/inspector')) return '/inspector';
   if (location.pathname.startsWith('/citizen')) return '/citizen';
