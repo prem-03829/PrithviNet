@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
+import { useUserStore } from '../store/useUserStore';
 import { cn } from '../utils/cn';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar({ role }) {
-  const { setMobileMenuOpen, user, logout } = useAppStore();
+  const { setMobileMenuOpen } = useAppStore();
+  const { user, logout } = useUserStore();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();

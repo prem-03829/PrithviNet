@@ -10,9 +10,11 @@ import { usePollutionStore } from "../store/usePollutionStore";
 import { useComplaintStore } from "../store/useComplaintStore";
 import { useAppStore } from "../store/useAppStore";
 import { useUserStore } from "../store/useUserStore";
+import { useBasePath } from "../hooks/useBasePath";
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const basePath = useBasePath();
   const { sensors } = usePollutionStore();
   const { complaints } = useComplaintStore();
   const { alerts } = useAppStore();
@@ -84,7 +86,7 @@ export default function Dashboard() {
       </td>
       <td className="px-6 py-4">
         <button
-          onClick={() => navigate(`/admin/investigation/${row.id}`)}
+          onClick={() => navigate(`${basePath}/investigation/${row.id}`)}
           className="p-1 text-text-secondary hover:text-primary transition-colors"
           title="View Investigation Details"
         >
@@ -97,21 +99,27 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col w-full h-full overflow-y-auto custom-scrollbar p-4 md:p-8 space-y-6 md:space-y-8 animate-in fade-in duration-500 max-w-[1600px] mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-xl md:text-2xl font-bold text-text-primary">
-            Overview
-          </h2>
-          {user && (
-            <div className="flex items-center gap-2 mt-1 text-text-secondary text-xs md:text-sm">
-              <span className="material-symbols-outlined text-sm text-primary">
-                location_on
-              </span>
-              <span>
-                Showing data for{" "}
-                <strong className="text-text-primary">{user.city}</strong>
-              </span>
+        <div className="flex items-center gap-4">
+          {user?.avatar && (
+            <div className="size-12 md:size-14 rounded-xl border-2 border-primary border-opacity-20 overflow-hidden shadow-md shrink-0">
+              <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
             </div>
           )}
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-text-primary leading-tight">
+              Welcome back, {user?.name?.split(' ')[0]}
+            </h2>
+            {user && (
+              <div className="flex items-center gap-2 mt-0.5 text-text-secondary text-xs md:text-sm">
+                <span className="material-symbols-outlined text-sm text-primary">
+                  location_on
+                </span>
+                <span>
+                  {user.city}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
         <div className="flex items-center justify-between sm:justify-end gap-2 px-3 py-1.5 rounded-full bg-panel dark:bg-panel border border-border dark:border-border cursor-pointer hover:bg-panel transition-colors w-full sm:w-auto text-text-secondary">
           <span className="text-xs md:text-sm font-medium">All Regions</span>
@@ -120,7 +128,7 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-        <div onClick={() => navigate("/admin/map")} className="cursor-pointer">
+        <div onClick={() => navigate(`${basePath}/map`)} className="cursor-pointer">
           <KpiCard
             title="Regional Pollution Summary"
             icon="air"
@@ -146,7 +154,7 @@ export default function Dashboard() {
           />
         </div>
         <div
-          onClick={() => navigate("/admin/alerts")}
+          onClick={() => navigate(`${basePath}/alerts`)}
           className="cursor-pointer sm:col-span-2 lg:col-span-1"
         >
           <KpiCard
@@ -210,7 +218,7 @@ export default function Dashboard() {
               alerts.map((alert) => (
                 <div
                   key={alert?.id}
-                  onClick={() => navigate("/admin/alerts")}
+                  onClick={() => navigate(`${basePath}/alerts`)}
                   className="cursor-pointer"
                 >
                   <AlertCard
@@ -224,7 +232,7 @@ export default function Dashboard() {
             <Button
               variant="outline"
               className="text-xs md:text-sm flex-1"
-              onClick={() => navigate("/admin/ai")}
+              onClick={() => navigate(`${basePath}/ai`)}
             >
               <span className="material-symbols-outlined text-sm">robot_2</span>
               AI Assistant
@@ -245,7 +253,7 @@ export default function Dashboard() {
             Recent Compliance Incidents
           </h3>
           <button
-            onClick={() => navigate("/admin/compliance")}
+            onClick={() => navigate(`${basePath}/compliance`)}
             className="text-xs md:text-sm text-primary font-medium hover:underline"
           >
             View all

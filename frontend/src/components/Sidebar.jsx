@@ -1,9 +1,11 @@
 import { NavLink, Link } from 'react-router-dom';
 import { cn } from '../utils/cn';
 import { useAppStore } from '../store/useAppStore';
+import { useUserStore } from '../store/useUserStore';
 
 export default function Sidebar({ title, links, logo, fixed, role }) {
   const { sidebarOpen, setSidebarOpen, mobileMenuOpen, setMobileMenuOpen } = useAppStore();
+  const { user } = useUserStore();
   const settingsPath = role === 'Citizen' ? '/citizen/settings' : '/admin/settings';
 
   return (
@@ -58,7 +60,7 @@ export default function Sidebar({ title, links, logo, fixed, role }) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-border mt-auto">
+        <div className="p-4 border-t border-border mt-auto space-y-2">
           <Link 
             to={settingsPath}
             onClick={() => setMobileMenuOpen(false)}
@@ -70,6 +72,22 @@ export default function Sidebar({ title, links, logo, fixed, role }) {
             <span className="material-symbols-outlined shrink-0">settings</span>
             {sidebarOpen && <span>Settings</span>}
           </Link>
+
+          {/* User Profile Summary */}
+          <div className={cn(
+            "p-2 rounded-xl bg-panel flex items-center gap-3 overflow-hidden transition-all",
+            !sidebarOpen && "p-0 bg-transparent justify-center"
+          )}>
+            <div className="size-9 rounded-lg border border-primary border-opacity-20 overflow-hidden shrink-0 shadow-sm">
+              <img src={user?.avatar} alt="User Avatar" className="w-full h-full object-cover" />
+            </div>
+            {sidebarOpen && (
+              <div className="min-w-0 animate-in fade-in slide-in-from-left-2">
+                <p className="text-xs font-bold text-text-primary truncate">{user?.name}</p>
+                <p className="text-[10px] text-text-muted truncate font-medium">{user?.role}</p>
+              </div>
+            )}
+          </div>
         </div>
       </aside>
     </>

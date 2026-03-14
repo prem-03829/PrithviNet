@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
+import { useUserStore } from '../store/useUserStore';
 import Button from '../components/Button';
 import { complaintService } from '../services/complaintService';
 import LocationPickerModal from '../components/LocationPickerModal';
@@ -9,7 +10,8 @@ import Dropdown from '../components/Dropdown';
 
 export default function FileComplaint() {
   const navigate = useNavigate();
-  const { addComplaint, userLocation } = useAppStore();
+  const { addComplaint } = useAppStore();
+  const { userLocation } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   

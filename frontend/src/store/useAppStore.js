@@ -18,25 +18,15 @@ export const useAppStore = create((set, get) => ({
   sidebarOpen: true,
   mobileMenuOpen: false,
   showLocationPermission: true,
+  userLocation: null,
   locationLoading: false,
   locationError: null,
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   setMobileMenuOpen: (open) => set({ mobileMenuOpen: open }),
   setShowLocationPermission: (show) => set({ showLocationPermission: show }),
-
-  // User State
-  user: {
-    name: 'Sahil Kapoor',
-    email: 'sahil.kapoor@gov.in',
-    role: 'Admin Official',
-    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp3fcDeYLg208bCk0ztIFblaK2xJzNeUZTKZaoF4Rhzs9-3IcYa8eeuAMq7cW26OCsYm5AZ2GmyrJPsb5Pu8T1m43GQA1XirbTDgvQnxGZUnc22i2cXFsQACOdcN0-vmGqAifS_N6JBjyf6SkeMsjrdoDSecHnIWbZTegcrTg9yxIbBcpHyNxZCAwlJpZOndgqi0McYgUc4x428LxOJjjbeRqAiXIk6_C3_70J8k1pRJ6e6hD0kMVTxWkVI3az7KqoQndy2tUkv1c'
-  },
-  userLocation: null,
-  setUser: (user) => set({ user }),
   setUserLocation: (loc) => set({ userLocation: loc, showLocationPermission: false }),
   setLocationLoading: (loading) => set({ locationLoading: loading }),
-  setLocationError: (error) => set({ locationError: error, showLocationPermission: false }),
-  logout: () => set({ user: null }),
+  setLocationError: (error) => set({ locationError: error }),
 
   // Preferences State
   preferences: [

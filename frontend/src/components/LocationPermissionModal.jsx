@@ -18,44 +18,68 @@ export default function LocationPermissionModal() {
 
   const handleRequest = () => {
     setStatusMessage(null);
-    console.log("Geolocation: Requesting permission...");
+    setLocationError(null);
+    console.log("Geolocation UI: 'Share my location' button clicked.");
     
     if (!navigator.geolocation) {
       const err = "Geolocation is not supported by your browser.";
-      console.error("Geolocation:", err);
+      console.error("Geolocation Error:", err);
       setLocationError(err);
       return;
     }
 
+    console.log("Geolocation: Requesting current position...");
     setLocationLoading(true);
+
+    const options = { 
+      enableHighAccuracy: true, 
+      timeout: 15000, 
+      maximumAge: 0 
+    };
+
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
-        console.log("Geolocation: Success", { latitude, longitude });
+        const { latitude, longitude, accuracy } = position.coords;
+        console.log("Geolocation Success:", { latitude, longitude, accuracy });
         
         // Mock reverse geocoding
-        const mockCity = "Near you"; 
+        const mockCity = "Your neighborhood"; 
         
-        setStatusMessage("Using your current location");
+        setStatusMessage("Location successfully shared!");
+        console.log("Geolocation UI: Success message displayed.");
         
         // Brief delay to show success state before closing
         setTimeout(() => {
+          console.log("Geolocation UI: Updating store and closing modal.");
           setUserLocation({ lat: latitude, lng: longitude, city: mockCity });
           setLocationLoading(false);
-          setShowLocationPermission(false);
+          // showLocationPermission is handled by setUserLocation in some store implementations, 
+          // but we'll be explicit here if needed.
         }, 1500);
       },
       (error) => {
-        console.warn("Geolocation: Error or Denied", error.message);
-        let msg = "Location access denied. Using default location (India).";
-        if (error.code === 1) msg = "Permission denied. Please enable location in your browser settings.";
-        else if (error.code === 2) msg = "Location unavailable. Check your network connection.";
-        else if (error.code === 3) msg = "Request timed out.";
+        console.warn("Geolocation Error Detail:", { code: error.code, message: error.message });
+        let msg = "Location access failed.";
         
+        switch(error.code) {
+          case error.PERMISSION_DENIED:
+            msg = "Permission denied. Please enable location access in your browser settings and try again.";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            msg = "Location information is unavailable. Please check your network or GPS.";
+            break;
+          case error.TIMEOUT:
+            msg = "The request to get user location timed out. Please try again.";
+            break;
+          default:
+            msg = "An unknown error occurred while fetching location.";
+        }
+        
+        console.error("Geolocation UI Error:", msg);
         setLocationError(msg);
         setLocationLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+      options
     );
   };
 

@@ -1,12 +1,13 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
+import { useBasePath } from '../hooks/useBasePath';
 
 export default function DummyPage({ title }) {
   const navigate = useNavigate();
-  const location = useLocation();
+  const basePath = useBasePath();
 
   const handleAiClick = () => {
-    const aiPath = location.pathname.startsWith('/admin') ? '/admin/ai' : '/citizen/ai-assistant';
+    const aiPath = `${basePath}/ai`;
     navigate(aiPath);
   };
 

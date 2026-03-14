@@ -1,29 +1,58 @@
 import { useNavigate } from 'react-router-dom';
-import { useAppStore } from '../store/useAppStore';
+import { useUserStore } from '../store/useUserStore';
 import ThemeToggle from '../components/ThemeToggle';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { setUser } = useAppStore();
+  const { setUser } = useUserStore();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    const role = e.target.role.value;
+    const role = e.target.role.value;    console.log(`Login decision: role selected is "${role}"`);
     
     if (role === 'citizen') {
       setUser({
+        id: 'US-4492',
         name: 'Arjun Mehra',
         email: 'arjun.mehra@example.com',
-        role: 'citizen',
-        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcSooiWL5QJfcdvtCF5pXx7Rc-7f2WYGLJI7HXEAicDBhcfQLs1ulmlkuNyIIC4dhW4vuYUyHtnlGta_twTWhWzzvHbryg_kpmQVU94RYrrBAV6sZjdjR-UrYr6wPxo70oxs0OAVUywhYqYNwvWiUP9R54mpGwNOzTQ6MQeLZwfPV0YaPpdambOaQKYOOQLHRFZQ4A8CNw9tNOsD6eyD-OxTR9RnqXWdVqZHv8wphYU7e8WRnD2Htr4NoPLifdjBUGJq0s2U9nohw'
+        role: 'Citizen',
+        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAcSooiWL5QJfcdvtCF5pXx7Rc-7f2WYGLJI7HXEAicDBhcfQLs1ulmlkuNyIIC4dhW4vuYUyHtnlGta_twTWhWzzvHbryg_kpmQVU94RYrrBAV6sZjdjR-UrYr6wPxo70oxs0OAVUywhYqYNwvWiUP9R54mpGwNOzTQ6MQeLZwfPV0YaPpdambOaQKYOOQLHRFZQ4A8CNw9tNOsD6eyD-OxTR9RnqXWdVqZHv8wphYU7e8WRnD2Htr4NoPLifdjBUGJq0s2U9nohw',
+        city: 'Mumbai',
+        phone: '+91 98765 43210'
       });
       navigate('/citizen/map');
-    } else {
+    } else if (role === 'authority') {
       setUser({
+        id: 'AUTH-101',
+        name: 'Inspector Verma',
+        email: 'verma.insp@gov.in',
+        role: 'Authority / Inspector',
+        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp3fcDeYLg208bCk0ztIFblaK2xJzNeUZTKZaoF4Rhzs9-3IcYa8eeuAMq7cW26OCsYm5AZ2GmyrJPsb5Pu8T1m43GQA1XirbTDgvQnxGZUnc22i2cXFsQACOdcN0-vmGqAifS_N6JBjyf6SkeMsjrdoDSecHnIWbZTegcrTg9yxIbBcpHyNxZCAwlJpZOndgqi0McYgUc4x428LxOJjjbeRqAiXIk6_C3_70J8k1pRJ6e6hD0kMVTxWkVI3az7KqoQndy2tUkv1c',
+        city: 'Delhi',
+        phone: '+91 99887 76655'
+      });
+      navigate('/authority/dashboard');
+    } else if (role === 'government') {
+      setUser({
+        id: 'GOV-202',
         name: 'Sahil Kapoor',
         email: 'sahil.kapoor@gov.in',
-        role: 'authority',
-        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp3fcDeYLg208bCk0ztIFblaK2xJzNeUZTKZaoF4Rhzs9-3IcYa8eeuAMq7cW26OCsYm5AZ2GmyrJPsb5Pu8T1m43GQA1XirbTDgvQnxGZUnc22i2cXFsQACOdcN0-vmGqAifS_N6JBjyf6SkeMsjrdoDSecHnIWbZTegcrTg9yxIbBcpHyNxZCAwlJpZOndgqi0McYgUc4x428LxOJjjbeRqAiXIk6_C3_70J8k1pRJ6e6hD0kMVTxWkVI3az7KqoQndy2tUkv1c'
+        role: 'Government Official',
+        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp3fcDeYLg208bCk0ztIFblaK2xJzNeUZTKZaoF4Rhzs9-3IcYa8eeuAMq7cW26OCsYm5AZ2GmyrJPsb5Pu8T1m43GQA1XirbTDgvQnxGZUnc22i2cXFsQACOdcN0-vmGqAifS_N6JBjyf6SkeMsjrdoDSecHnIWbZTegcrTg9yxIbBcpHyNxZCAwlJpZOndgqi0McYgUc4x428LxOJjjbeRqAiXIk6_C3_70J8k1pRJ6e6hD0kMVTxWkVI3az7KqoQndy2tUkv1c',
+        city: 'Mumbai',
+        phone: '+91 91234 56789'
+      });
+      navigate('/official/dashboard');
+    } else {
+      // Default to admin if anything else
+      setUser({
+        id: 'ADMIN-001',
+        name: 'System Admin',
+        email: 'admin@prithvinet.gov',
+        role: 'Admin',
+        avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCp3fcDeYLg208bCk0ztIFblaK2xJzNeUZTKZaoF4Rhzs9-3IcYa8eeuAMq7cW26OCsYm5AZ2GmyrJPsb5Pu8T1m43GQA1XirbTDgvQnxGZUnc22i2cXFsQACOdcN0-vmGqAifS_N6JBjyf6SkeMsjrdoDSecHnIWbZTegcrTg9yxIbBcpHyNxZCAwlJpZOndgqi0McYgUc4x428LxOJjjbeRqAiXIk6_C3_70J8k1pRJ6e6hD0kMVTxWkVI3az7KqoQndy2tUkv1c',
+        city: 'New Delhi',
+        phone: '+91 11001 10011'
       });
       navigate('/admin/dashboard');
     }

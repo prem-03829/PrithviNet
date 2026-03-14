@@ -1,6 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useEffect } from 'react';
+
+// Layouts
 import AdminLayout from './layouts/AdminLayout';
+import OfficialLayout from './layouts/OfficialLayout';
+import AuthorityLayout from './layouts/AuthorityLayout';
+import InspectorLayout from './layouts/InspectorLayout';
 import CitizenLayout from './layouts/CitizenLayout';
 
 // Components
@@ -19,6 +24,7 @@ import FileComplaint from './pages/FileComplaint';
 import InvestigationDetail from './pages/InvestigationDetail';
 import ComplaintDetails from './pages/ComplaintDetails';
 import Profile from './pages/Profile';
+import EditProfile from './pages/EditProfile';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import CitizenRegister from './pages/CitizenRegister';
@@ -72,6 +78,58 @@ function App() {
             <Route path="investigation/:id" element={<InvestigationDetail />} />
             <Route path="awareness" element={<DummyPage title="Awareness & Data" />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<EditProfile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="notifications" element={<DummyPage title="Notifications" />} />
+          </Route>
+
+          {/* Official Routes */}
+          <Route path="/official" element={<OfficialLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="map" element={<PollutionMap isAdmin={true} />} />
+            <Route path="compliance" element={<Compliance />} />
+            <Route path="policy" element={<PolicyInsights />} />
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="ai" element={<AIAssistant />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="investigation/:id" element={<InvestigationDetail />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<EditProfile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="notifications" element={<DummyPage title="Notifications" />} />
+          </Route>
+
+          {/* Authority Routes */}
+          <Route path="/authority" element={<AuthorityLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="map" element={<PollutionMap isAdmin={true} />} />
+            <Route path="compliance" element={<Compliance />} />
+            <Route path="policy" element={<PolicyInsights />} />
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="ai" element={<AIAssistant />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="investigation/:id" element={<InvestigationDetail />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<EditProfile />} />
+            <Route path="settings" element={<Settings />} />
+            <Route path="notifications" element={<DummyPage title="Notifications" />} />
+          </Route>
+
+          {/* Inspector Routes */}
+          <Route path="/inspector" element={<InspectorLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="map" element={<PollutionMap isAdmin={true} />} />
+            <Route path="compliance" element={<Compliance />} />
+            <Route path="policy" element={<PolicyInsights />} />
+            <Route path="alerts" element={<Alerts />} />
+            <Route path="ai" element={<AIAssistant />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="investigation/:id" element={<InvestigationDetail />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<EditProfile />} />
             <Route path="settings" element={<Settings />} />
             <Route path="notifications" element={<DummyPage title="Notifications" />} />
           </Route>
@@ -84,6 +142,7 @@ function App() {
             <Route path="complaint/:id" element={<ComplaintDetails />} />
             <Route path="awareness" element={<DummyPage title="Awareness & Data" />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="profile/edit" element={<EditProfile />} />
             <Route path="settings" element={<Settings />} />
             <Route path="notifications" element={<DummyPage title="Notifications" />} />
             <Route path="ai-assistant" element={<AIAssistant />} />
