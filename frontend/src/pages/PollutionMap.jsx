@@ -32,7 +32,7 @@ export default function PollutionMap({ isAdmin }) {
   return (
     <div className="relative flex-1 h-[calc(100vh-64px)] w-full flex flex-col bg-panel dark:bg-app overflow-hidden animate-in fade-in duration-700">
       {/* Top Filter Bar - Positioned relative on mobile to prevent overlaying, absolute on md+ */}
-      <div className="w-full md:absolute md:top-6 md:left-1/2 md:-translate-x-1/2 md:max-w-4xl px-2 md:px-4 z-[40] pointer-events-none mt-2 md:mt-0">
+      {/* <div className="w-full md:absolute md:top-6 md:left-1/2 md:-translate-x-1/2 md:max-w-4xl px-2 md:px-4 z-[40] pointer-events-none mt-2 md:mt-0">
         <div className="flex flex-wrap items-center justify-between gap-2 md:gap-4 rounded-xl md:rounded-2xl bg-surface/80 dark:bg-app/40 p-1.5 md:p-2 shadow-2xl backdrop-blur-xl border border-border/50 dark:border-border/20 pointer-events-auto">
           <div className="flex items-center gap-1 bg-panel dark:bg-primary dark:bg-opacity-5 p-1 rounded-lg md:rounded-xl overflow-x-auto no-scrollbar">
             {['Air', 'Water', 'Noise'].map((label) => {
@@ -68,7 +68,7 @@ export default function PollutionMap({ isAdmin }) {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="flex-1 relative z-0">
         {sensors.length > 0 ? (
@@ -83,7 +83,7 @@ export default function PollutionMap({ isAdmin }) {
         )}
         
         {/* Map Control Buttons - Anchored to bottom right */}
-        <div className="absolute right-4 bottom-4 md:right-6 md:bottom-6 flex flex-col gap-2 z-[40]">
+        {/* <div className="absolute right-4 bottom-4 md:right-6 md:bottom-6 flex flex-col gap-2 z-[40]">
           <button 
             onClick={() => mapRef.current?.zoomIn()}
             className="flex h-10 w-10 md:h-12 md:w-12 items-center justify-center rounded-lg md:rounded-xl bg-surface/80 dark:bg-app/60 shadow-xl border border-border dark:border-border/20 backdrop-blur-md hover:bg-primary hover:text-white transition-all text-text-secondary"
@@ -105,10 +105,10 @@ export default function PollutionMap({ isAdmin }) {
           >
             <span className="material-symbols-outlined text-lg md:text-xl">near_me</span>
           </button>
-        </div>
+        </div> */}
 
         {/* Legend - Hidden on mobile to save space */}
-        <div className="absolute left-4 bottom-4 z-[40] hidden md:block">
+        {/* <div className="absolute left-4 bottom-4 z-[40] hidden md:block">
           <div className="rounded-2xl bg-surface/80 dark:bg-app/60 p-4 shadow-xl border border-border dark:border-border/20 backdrop-blur-md">
             <p className="mb-3 text-xs font-bold uppercase tracking-widest text-primary text-opacity-60">Pollution Levels</p>
             <div className="flex flex-col gap-3">
@@ -118,7 +118,7 @@ export default function PollutionMap({ isAdmin }) {
               <div className="flex items-center gap-3"><div className="h-3 w-3 rounded-full bg-red-600"></div><span className="text-xs font-medium text-text-secondary">Critical (200+)</span></div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
