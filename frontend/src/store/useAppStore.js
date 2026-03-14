@@ -112,7 +112,203 @@ export const useAppStore = create((set, get) => ({
   ],
   complaints: [],
   investigations: [],
-  complianceData: [],
+  complianceData: [
+    {
+      id: "CMP-Manufacturing-001",
+      sector: "Manufacturing",
+      icon: "factory",
+      entity: {
+        name: "Eco-Friendly Plastics Corp",
+        registration_no: "REG-MAN-2024-88",
+        permit_type: "Standard Operating Permit"
+      },
+      location: {
+        address: "Plot 12, Industrial Area Phase 1",
+        city: "Mumbai",
+        coordinates: { lat: 19.0760, lng: 72.8777 }
+      },
+      authority: {
+        body: "Central Pollution Control Board",
+        officer_in_charge: "Arjun Sharma",
+        last_notified: "2024-03-12T08:00:00Z"
+      },
+      metrics: {
+        compliance_score: 85,
+        parameter: "Air Emissions",
+        unit: "AQI Index",
+        target: 100,
+        actual: 45
+      },
+      risk_level: "medium",
+      compliance: {
+        status: "Compliant",
+        severity: "Low",
+        last_inspection: "2024-03-14T10:00:00Z"
+      },
+      lifecycle: {
+        stage: "Monitoring",
+        status: "active",
+        created_at: "2024-01-15T09:00:00Z",
+        updated_at: "2024-03-14T12:00:00Z"
+      }
+    },
+    {
+      id: "CMP-Healthcare-002",
+      sector: "Healthcare",
+      icon: "health_and_safety",
+      entity: {
+        name: "City General Hospital",
+        registration_no: "REG-HEA-2023-45",
+        permit_type: "Medical Waste Disposal"
+      },
+      location: {
+        address: "Sector 4, Central District",
+        city: "Delhi",
+        coordinates: { lat: 28.6139, lng: 77.2090 }
+      },
+      authority: {
+        body: "Municipal Health Department",
+        officer_in_charge: "Dr. Sunita Rao",
+        last_notified: "2024-03-13T14:30:00Z"
+      },
+      metrics: {
+        compliance_score: 42,
+        parameter: "Waste Management",
+        unit: "Incineration Efficiency",
+        target: 95,
+        actual: 62
+      },
+      risk_level: "high",
+      compliance: {
+        status: "Warning",
+        severity: "Medium",
+        last_inspection: "2024-03-13T18:00:00Z"
+      },
+      lifecycle: {
+        stage: "Review",
+        status: "pending",
+        created_at: "2023-11-20T11:00:00Z",
+        updated_at: "2024-03-13T18:30:00Z"
+      }
+    },
+    {
+      id: "CMP-Financial-003",
+      sector: "Financial Services",
+      icon: "account_balance",
+      entity: {
+        name: "Global Bank HQ",
+        registration_no: "REG-FIN-2022-12",
+        permit_type: "Energy Efficiency Cert"
+      },
+      location: {
+        address: "BKC Financial Hub",
+        city: "Mumbai",
+        coordinates: { lat: 19.0607, lng: 72.8636 }
+      },
+      authority: {
+        body: "Sustainable Finance Bureau",
+        officer_in_charge: "Vikram Mehta",
+        last_notified: "2024-03-10T09:00:00Z"
+      },
+      metrics: {
+        compliance_score: 96,
+        parameter: "Carbon Footprint",
+        unit: "CO2e Tonnes/Year",
+        target: 500,
+        actual: 420
+      },
+      risk_level: "low",
+      compliance: {
+        status: "Compliant",
+        severity: "None",
+        last_inspection: "2024-03-13T11:00:00Z"
+      },
+      lifecycle: {
+        stage: "Certification",
+        status: "archived",
+        created_at: "2022-05-10T10:00:00Z",
+        updated_at: "2024-03-13T11:30:00Z"
+      }
+    },
+    {
+      id: "CMP-Energy-004",
+      sector: "Energy & Utilities",
+      icon: "bolt",
+      entity: {
+        name: "North Grid Power Station",
+        registration_no: "REG-ENE-2024-01",
+        permit_type: "Effluent Discharge"
+      },
+      location: {
+        address: "East River Bank",
+        city: "Patna",
+        coordinates: { lat: 25.5941, lng: 85.1376 }
+      },
+      authority: {
+        body: "National Energy Council",
+        officer_in_charge: "Kunal Jha",
+        last_notified: "2024-03-11T16:45:00Z"
+      },
+      metrics: {
+        compliance_score: 12,
+        parameter: "Water Temperature",
+        unit: "Delta Celsius",
+        target: 2,
+        actual: 8
+      },
+      risk_level: "high",
+      compliance: {
+        status: "Critical",
+        severity: "High",
+        last_inspection: "2024-03-11T12:00:00Z"
+      },
+      lifecycle: {
+        stage: "Enforcement",
+        status: "violating",
+        created_at: "2024-02-01T08:00:00Z",
+        updated_at: "2024-03-11T17:00:00Z"
+      }
+    },
+    {
+      id: "CMP-Logistics-005",
+      sector: "Logistics",
+      icon: "local_shipping",
+      entity: {
+        name: "Prime Logistics Hub",
+        registration_no: "REG-LOG-2023-99",
+        permit_type: "Vehicle Emission Standards"
+      },
+      location: {
+        address: "Port Road Terminal",
+        city: "Chennai",
+        coordinates: { lat: 13.0827, lng: 80.2707 }
+      },
+      authority: {
+        body: "Regional Transport Authority",
+        officer_in_charge: "Meena Swaminathan",
+        last_notified: "2024-03-14T07:30:00Z"
+      },
+      metrics: {
+        compliance_score: 78,
+        parameter: "Fleet Emissions",
+        unit: "BS-VI Compliance %",
+        target: 100,
+        actual: 78
+      },
+      risk_level: "medium",
+      compliance: {
+        status: "Compliant",
+        severity: "Low",
+        last_inspection: "2024-03-14T09:00:00Z"
+      },
+      lifecycle: {
+        stage: "Monitoring",
+        status: "pending",
+        created_at: "2023-08-15T12:00:00Z",
+        updated_at: "2024-03-14T09:30:00Z"
+      }
+    }
+  ],
   
   // Filters
   mapFilter: 'air',
