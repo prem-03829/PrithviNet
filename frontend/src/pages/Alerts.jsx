@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '../store/useAppStore';
+import { useUserStore } from '../store/useUserStore';
 import AlertCard from '../components/AlertCard';
 import { useBasePath } from '../hooks/useBasePath';
 import { cn } from '../utils/cn';
@@ -9,14 +10,45 @@ export default function Alerts() {
   const navigate = useNavigate();
   const basePath = useBasePath();
   const { alerts } = useAppStore();
+  const { user } = useUserStore();
   const [filter, setFilter] = useState('all');
 
+  const isCitizen = user?.role?.toLowerCase() === 'citizen';
+
+  const roleFilteredAlerts = useMemo(() => {
+    if (!isCitizen) return alerts;
+
+    const userCity = user?.city?.toLowerCase() || '';
+    
+    return alerts.filter(alert => {
+      const source = alert.source?.toLowerCase() || '';
+      const location = alert.location?.toLowerCase() || '';
+
+      // Show environmental alerts (Sensors)
+      if (source === 'sensor') return true;
+      
+      // Show AI warnings
+      if (source.includes('ai')) return true;
+      
+      // Show citizen complaints only if near user city
+      if (source === 'citizen') {
+        if (!userCity) return true; // Show all if city not set? Or hide? Requirement says 'near user city'
+        return location.includes(userCity);
+      }
+
+      // Hide others (Industry, System, etc.)
+      return false;
+    });
+  }, [alerts, isCitizen, user?.city]);
+
   const filteredAlerts = useMemo(() => {
-    if (filter === 'all') return alerts;
-    return alerts.filter(alert => alert.severity?.toLowerCase() === filter.toLowerCase());
-  }, [alerts, filter]);
+    if (filter === 'all') return roleFilteredAlerts;
+    return roleFilteredAlerts.filter(alert => alert.severity?.toLowerCase() === filter.toLowerCase());
+  }, [roleFilteredAlerts, filter]);
 
   const handleAlertClick = (alert) => {
+    // Citizens might not have access to investigation details, but they can view the alert
+    if (isCitizen) return; 
     navigate(`${basePath}/investigation/${alert.id}`);
   };
 
@@ -25,6 +57,10 @@ export default function Alerts() {
     { label: 'Critical', value: 'critical' },
     { label: 'Warning', value: 'warning' },
   ];
+
+  const emptyMessage = isCitizen 
+    ? "No environmental alerts in your area" 
+    : `No ${filter !== 'all' ? filter : ''} alerts at this time.`;
 
   return (
     <div className="flex-1 overflow-y-auto custom-scrollbar p-4 md:p-8">
@@ -57,7 +93,7 @@ export default function Alerts() {
           {filteredAlerts.length === 0 ? (
             <div className="text-center py-20 bg-surface border border-border rounded-2xl border-dashed">
               <span className="material-symbols-outlined text-4xl text-text-muted mb-2">notifications_off</span>
-              <p className="text-text-secondary">No {filter !== 'all' ? filter : ''} alerts at this time.</p>
+              <p className="text-text-secondary font-medium uppercase tracking-widest text-xs">{emptyMessage}</p>
             </div>
           ) : (
             filteredAlerts.map((alert) => (
@@ -73,7 +109,7 @@ export default function Alerts() {
         {/* Pagination */}
         {filteredAlerts.length > 0 && (
           <div className="flex items-center justify-between pt-6 border-t border-border">
-            <p className="text-sm text-text-secondary">Showing {filteredAlerts.length} of {alerts.length} alerts from last 24 hours</p>
+            <p className="text-sm text-text-secondary">Showing {filteredAlerts.length} of {roleFilteredAlerts.length} alerts</p>
             <div className="flex gap-2">
               <button className="size-8 flex items-center justify-center rounded border border-border hover:bg-panel transition-colors">
                 <span className="material-symbols-outlined text-sm">chevron_left</span>

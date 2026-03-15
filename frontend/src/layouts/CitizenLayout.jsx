@@ -10,8 +10,8 @@ export default function CitizenLayout() {
     { label: 'Public Pollution Map', icon: 'map', to: '/citizen/map' },
     { label: 'File Complaint', icon: 'chat_bubble', to: '/citizen/file-complaint' },
     { label: 'My Complaints', icon: 'fact_check', to: '/citizen/my-complaints' },
+    { label: 'Alerts', icon: 'notifications', to: '/citizen/alerts' },
     { label: 'AI Assistant', icon: 'robot_2', to: '/citizen/ai-assistant' },
-    { label: 'Awareness & Data', icon: 'auto_stories', to: '/citizen/awareness' },
     { label: 'Profile', icon: 'account_circle', to: '/citizen/profile' },
   ];
 

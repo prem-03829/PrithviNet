@@ -126,7 +126,7 @@ function App() {
             <Route path="file-complaint" element={<FileComplaint />} />
             <Route path="my-complaints" element={<MyComplaints />} />
             <Route path="complaint/:id" element={<ComplaintDetails />} />
-            <Route path="awareness" element={<DummyPage title="Awareness & Data" />} />
+            <Route path="alerts" element={<Alerts />} />
             <Route path="profile" element={<Profile />} />
             <Route path="profile/edit" element={<EditProfile />} />
             <Route path="settings" element={<Settings />} />
